@@ -1,5 +1,7 @@
-<img src="Images/TK2.png" height="100px" />
-<img src="Images/TEN-KOH2.png" height="100px" />
+<p>    
+    <img src="Images/TK2.png" height="100px" />
+    <img src="Images/TEN-KOH2.png" height="100px" />
+</p>
 
 # Ten-Koh2 CW Beacon Decoder
 
