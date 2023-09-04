@@ -19,9 +19,9 @@ This is an application developed at the Okuyama Laboratory for decoding the CW b
 
 ## Sample CW Beacon Strings
 
-> 28fa37549eb67019f19d0
-> 28fa37549eb6701C5B377922700040000
-> 28fa37549eb67005AD097BC25D0006330
+> 28fa37549eb67019f19d0  
+> 28fa37549eb6701C5B377922700040000  
+> 28fa37549eb67005AD097BC25D0006330  
 
 ## Compatibility
 
