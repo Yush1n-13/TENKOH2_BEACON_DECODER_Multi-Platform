@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+
+    <PublishSelfContained>true</PublishSelfContained>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <PublishSingleFile>true</PublishSingleFile>
+
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>link</TrimMode>
+
+    <TrimmerRootDescriptors>
+        <TrimmerRootDescriptor Include="\TrimmingExclusions.xml" />
+    </TrimmerRootDescriptors>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.0.4" />
+    <!--PackageReference Include="Avalonia.Controls.DataGrid" Version="11.0.4" /-->
+    <PackageReference Include="Avalonia.Desktop" Version="11.0.4" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.2" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <!--PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.2" /-->
+    <PackageReference Include="Material.Avalonia" Version="3.0.0-avalonia11-preview6.17-nightly" />
+    <!--PackageReference Include="Newtonsoft.Json" Version="13.0.3" /-->
+  </ItemGroup>
+
+  <ItemGroup>
+      <AvaloniaResource Include="Images\TK2.png"/>
+      <AvaloniaResource Include="Images\TK2_icon.ico"/>
+      <AvaloniaResource Include="Images\TEN-KOH2.png"/>
+      <AvaloniaResource Include="Images\TK2_Satellite.png"/>
+  </ItemGroup>
+
+</Project>

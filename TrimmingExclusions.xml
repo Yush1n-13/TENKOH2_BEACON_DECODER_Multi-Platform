@@ -1,0 +1,11 @@
+<linker>
+    <assembly fullname="Avalonia.Win32">
+        <type fullname="*" />
+    </assembly>
+    <assembly fullname="Material.Styles">
+        <type fullname="*" />
+    </assembly>
+    <assembly fullname="System.Reactive">
+        <type fullname="*" />
+    </assembly>
+</linker>

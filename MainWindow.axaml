@@ -1,0 +1,689 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:p1="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+        xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+
+        x:Class="TENKOH2_BEACON_DECODER_Multi_Platform.MainWindow"
+        Width="920"
+        Height="770"
+        CanResize="False"
+        Title="TENKOH2_BEACON_DECODER_v1"
+        Icon="Images\TK2_icon.ico">
+
+    <StackPanel Orientation="Vertical">
+        <!-- Column 1: Existing GUI -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >  
+            <StackPanel Orientation="Vertical">
+                <TextBox 
+                    x:Name="InputTextBox" 
+                    Height="60" 
+                    HorizontalAlignment="Left"
+                    VerticalContentAlignment="Bottom"
+                    UseFloatingWatermark="True" 
+                    p1:TextFieldAssist.Label="Insert Beacon String"
+                    Width="330" 
+                    Margin="10"
+                    FontSize="16"/>
+
+                <controls:Card
+                    x:Name="TimestampCard"
+                    Width="330" 
+                    Height="50" 
+                    HorizontalAlignment="Left" 
+                    Margin="10,0,10,10">
+                
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="TimeStamp" FontWeight="Bold" FontSize="16" Width="100" Margin="0,5,0,5"/>
+                        <TextBox x:Name="TimestampTextBox" IsReadOnly="True" FontSize="16"/>
+                    </StackPanel>
+                </controls:Card>
+            </StackPanel>
+            <StackPanel Orientation="Vertical">
+                <Button 
+                    x:Name="NUDecodeButton" 
+                    Click="NUDecodeButton_Click" 
+                    Content="Decode" 
+                    Width="90" 
+                    FontSize="14"
+                    Margin="10, 20, 10, 5"/>
+                <Button 
+                    Click="ClearButton_Click" 
+                    Content="Clear" 
+                    Width="90" 
+                    FontSize="14"
+                    Margin="10, 0, 10, 10"/>
+                <TextBlock 
+                    Text="JS1YKI"
+                    FontWeight="Bold"
+                    FontStyle="Italic"
+                    FontSize="22"
+                    HorizontalAlignment="Center"/>
+            </StackPanel>
+            <Image 
+                HorizontalAlignment="Left"  
+                Source="Images\TK2.png" 
+                Width="110" 
+                Margin="10"/>
+            <!--Image 
+                HorizontalAlignment="Left"  
+                Source="Images\TK2_Satellite.png" 
+                Height="110"
+                Margin="10"/-->
+        </StackPanel>
+
+        <TabControl Width="920" HorizontalAlignment="Left">
+            <TabControl.Items>
+                <TabItem Header="NUM">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal" Width="460" HorizontalAlignment="Left">
+                            <controls:Card
+                                x:Name="Card1" 
+                                Width="440" 
+                                Height="180" 
+                                HorizontalAlignment="Left"
+                                Margin="10">
+
+                                <StackPanel>
+                                    <TextBlock Text="Telemetry" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+
+                                        <!-- Opreation Mode   -->
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                            <TextBlock Text="Opreation Mode: " Width="150"/>
+                                            <TextBlock x:Name="txtOperationMode" FontStyle="Italic" Width="100"/>
+                                        </StackPanel>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- First Column -->
+                                        <StackPanel Orientation="Vertical" Grid.Column="0">
+                                            <!-- Battery Current -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="Battery Current: " Width="150"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtBatteryCurrent" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text=" A" Width="30"/>
+                                            </StackPanel>
+                                            <!-- Battery Status -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="Charge/Discharge" Width="150"/>
+                                                <TextBlock x:Name="txtBatteryStatus" FontStyle="Italic" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                            <!-- Battery Voltage -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="Battery Voltage: " Width="150"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtBatteryVoltage" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text=" V" Width="30"/>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!-- Second Column -->
+                                        <StackPanel Orientation="Vertical" Grid.Column="1">
+                                            <!-- Battery Temperature -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                                <TextBlock Text="Battery Temperature: " Width="150"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtBatteryTemperature" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text=" C" Width="30"/>
+                                            </StackPanel>
+                                            <!-- WDU Temperature -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                                <TextBlock Text="WDU Temperature: " Width="150"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtWDUTemperature" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text=" C" Width="30"/>
+                                            </StackPanel>
+                                            <!-- MCU Temperature -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                                <TextBlock Text="MCU Temperature: " Width="150"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtMCUTemperature" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text=" C" Width="30"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </controls:Card>
+
+                            <controls:Card
+                                x:Name="Card2" 
+                                Width="440" 
+                                Height="180" 
+                                HorizontalAlignment="Left" 
+                                Margin="10">
+
+                                <StackPanel>
+                                    <TextBlock Text="Satellite Status" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+
+                                    <!-- GPIO Expander ID -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                        <TextBlock Text="GPIO Expander ID: " Width="150"/>
+                                        <TextBlock x:Name="txtGPIOExpander" FontStyle="Italic" Width="70"/>
+                                        <TextBlock Width="30"/>
+                                    </StackPanel>
+
+                                    <Grid>    
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- First Column -->
+                                        <StackPanel Orientation="Vertical" Grid.Column="0" Margin="0,0,15,0">
+                                            <!-- 5V_CAM -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="5V_CAM:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator5VCAM" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt5VCAM" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 5V_PL -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="5V_PL:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator5VPL" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt5VPL" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 5V_NUM -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="5V_NUM:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator5VNUM" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt5VNUM" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 3V3_JAMSAT -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="3V3_JAMSAT:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator3V3JAMSAT" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt3V3JAMSAT" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 3V3_ADCS -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="3V3_ADCS:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator3V3ADCS" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt3V3ADCS" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!-- Second Column -->
+                                        <StackPanel Orientation="Vertical" Grid.Column="1">
+                                            <!-- 5V_OBC -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="5V_OBC:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator5VOBC" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt5VOBC" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 5V_ADCS -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="5V_ADCS:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator5VADCS" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt5VADCS" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 5V_COM -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="5V_COM:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator5VCOM" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt5VCOM" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 12V_ADCS -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="12V_ADCS:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator12VADCS" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt12VADCS" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 12V_LIU -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="12V_LIU:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator12VLIU" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt12VLIU" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </controls:Card>
+                        </StackPanel>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="JAM">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Vertical" Width="460" HorizontalAlignment="Left">
+                            <controls:Card
+                                x:Name="Card3" 
+                                Width="440" 
+                                Height="130" 
+                                HorizontalAlignment="Left"
+                                Margin="10">
+
+                                <StackPanel>
+                                    <TextBlock Text="Telemetry" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+
+                                        <!-- Opreation Mode   -->
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                            <TextBlock Text="Opreation Mode: " Width="150"/>
+                                            <TextBlock x:Name="txtOperationModeJ" FontStyle="Italic" Width="100"/>
+                                        </StackPanel>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- First Column -->
+                                        <StackPanel Orientation="Vertical" Grid.Column="0">
+                                            <!-- Battery Current -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="Battery Current: " Width="150"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtBatteryCurrentJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text=" A" Width="30"/>
+                                            </StackPanel>
+                                            <!-- Battery Status -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="Charge/Discharge" Width="150"/>
+                                                <TextBlock x:Name="txtBatteryStatusJ" FontStyle="Italic" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                            <!-- Battery Voltage -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="Battery Voltage: " Width="150"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtBatteryVoltageJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text=" V" Width="30"/>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!-- Second Column -->
+                                        <StackPanel Orientation="Vertical" Grid.Column="1">
+                                            <!-- Battery Temperature -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                                <TextBlock Text="Battery Temperature: " Width="150"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtBatteryTemperatureJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text=" C" Width="30"/>
+                                            </StackPanel>
+                                            <!-- WDU Temperature -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                                <TextBlock Text="WDU Temperature: " Width="150"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtWDUTemperatureJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text=" C" Width="30"/>
+                                            </StackPanel>
+                                            <!-- MCU Temperature -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                                <TextBlock Text="MCU Temperature: " Width="150"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtMCUTemperatureJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text=" C" Width="30"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </controls:Card>
+
+                            <controls:Card
+                                x:Name="Card4" 
+                                Width="440" 
+                                Height="180" 
+                                HorizontalAlignment="Left" 
+                                Margin="10">
+
+                                <StackPanel>
+                                    <TextBlock Text="Satellite Status" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+
+                                    <!-- GPIO Expander ID -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                        <TextBlock Text="GPIO Expander ID: " Width="150"/>
+                                        <TextBlock x:Name="txtGPIOExpanderJ" FontStyle="Italic" Width="70"/>
+                                        <TextBlock Width="30"/>
+                                    </StackPanel>
+
+                                    <Grid>    
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- First Column -->
+                                        <StackPanel Orientation="Vertical" Grid.Column="0" Margin="0,0,15,0">
+                                            <!-- 5V_CAM -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="5V_CAM:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator5VCAMJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt5VCAMJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 5V_PL -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="5V_PL:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator5VPLJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt5VPLJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 5V_NUM -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="5V_NUM:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator5VNUMJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt5VNUMJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 3V3_JAMSAT -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="3V3_JAMSAT:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator3V3JAMSATJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt3V3JAMSATJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 3V3_ADCS -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="3V3_ADCS:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator3V3ADCSJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt3V3ADCSJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!-- Second Column -->
+                                        <StackPanel Orientation="Vertical" Grid.Column="1">
+                                            <!-- 5V_OBC -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="5V_OBC:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator5VOBCJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt5VOBCJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 5V_ADCS -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="5V_ADCS:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator5VADCSJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt5VADCSJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 5V_COM -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="5V_COM:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator5VCOMJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt5VCOMJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 12V_ADCS -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="12V_ADCS:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator12VADCSJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt12VADCSJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 12V_LIU -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="12V_LIU:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator12VLIUJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt12VLIUJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </controls:Card>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical" Width="460" HorizontalAlignment="Left">
+                            <controls:Card
+                                x:Name="Card5"
+                                Width="440" 
+                                Height="130" 
+                                HorizontalAlignment="Left" 
+                                Margin="10">
+
+                                <StackPanel>
+                                    <TextBlock Text="JAMSAT Teremetry" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+                                    <Grid>    
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- First Column -->
+                                        <StackPanel Orientation="Vertical" Grid.Column="0">
+                                            <!-- Mode_Timer -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="Mode Timer: " Width="120"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtModeTimer" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text=" Min" Width="60"/>
+                                            </StackPanel>
+                                            <!-- Opration Mode -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="Opration Mode: " Width="120"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtModeTimerOP" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- SDC Voltage -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="ADC_Voltage: " Width="120"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtADCVoltage" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text=" V" Width="60"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        
+                                        <!-- Second Column -->
+                                        <StackPanel Orientation="Vertical" Grid.Column="1">
+                                            <!-- RF Input UHF-Band -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                                <TextBlock Text="RfInput(VHF): " Width="110"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="50" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtRFInput" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text=" dBm" Width="60"/>
+                                            </StackPanel>
+                                            <!-- RF Output VHF-Band  -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                                <TextBlock Text="RfOutput(UHF): " Width="110"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="50" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtRFOutputUHF" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text=" dBm" Width="60"/>
+                                            </StackPanel>
+                                            <!-- RF Output 58G -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                                <TextBlock Text="RfOutput(58G): " Width="110"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="50" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtRFOutput58G" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text=" dBm" Width="60"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </controls:Card>
+
+
+                            <controls:Card
+                                x:Name="Card6"
+                                Width="440" 
+                                Height="180" 
+                                HorizontalAlignment="Left" 
+                                Margin="10">
+
+                                <StackPanel>
+                                    <TextBlock Text="JAMSAT Status" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+
+                                    <Grid>    
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- First Column -->
+                                        <StackPanel Orientation="Vertical" Grid.Column="0">
+                                            <!-- txtVC1LOCK -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="VC1LOCK:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicatorVC1LOCK" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtVC1LOCK" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- txtVC2LOCK -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="VC2LOCK:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicatorVC2LOCK" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtVC2LOCK" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- txtVC3LOCK -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="7021LOCK:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator7021LOCK" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt7021LOCK" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- txtVC4LOCK -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="58GLOCK:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator58GLOCK" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt58GLOCK" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!-- Second Column -->
+                                        <StackPanel Orientation="Vertical" Grid.Column="1">
+                                            <!-- VC2_ON -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="VC2ON:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicatorVC2ON" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtVC2ON" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- AMPEN -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="AMPEN:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicatorAMPEN" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtAMPEN" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- 58GON -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="58GON:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicator58GON" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txt58GON" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <!-- UHFCWON -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="UHFCWON:" Width="130"/>
+                                                <Ellipse x:Name="statusIndicatorUHFCWON" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtUHFCWON" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                    </Grid>
+                                </StackPanel>
+                            </controls:Card>
+                        </StackPanel>
+                    </StackPanel>
+                </TabItem>
+            </TabControl.Items>
+        </TabControl>
+        <StackPanel Orientation="Horizontal">
+            <controls:Card
+                Width="440" 
+                Height="200" 
+                HorizontalAlignment="Left" 
+                Margin="10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Input Log" FontWeight="Bold" FontSize="16"/>
+                    
+                    <TextBox 
+                        Grid.Row="1"
+                        Name="OutputTextBox" 
+                        Width="380"
+                        Margin="0,0,0,0" 
+                        HorizontalAlignment="Left"
+                        AcceptsReturn="True"
+                        IsReadOnly="True"/>
+
+                    <Button 
+                        Grid.Row="2"
+                        Content="Clear Log"
+                        Width="100"
+                        Margin="0,5,0,0"
+                        Click="ClearLogButton_Click"
+                        HorizontalAlignment="Left" />
+                </Grid>
+            </controls:Card>
+            <controls:Card
+                Width="440" 
+                Height="200" 
+                HorizontalAlignment="Left" 
+                Margin="10"> 
+                <StackPanel>
+                    <TextBlock Text="Infomation" FontWeight="Bold" FontSize="16"/>
+                    <Image Source="Images\TEN-KOH2.png" Margin="5" Width="300"/>
+                    <TextBlock Text="There is the CW upload form"/>
+                    <TextBlock Text="https:xxxxxxxxxxxxxxx"/>
+                    <TextBlock Text="Thank you for your cooperation!"/>
+                </StackPanel>
+            </controls:Card>
+        </StackPanel>
+
+    </StackPanel> 
+</Window>
