@@ -71,7 +71,7 @@
                 Margin="10"/-->
         </StackPanel>
 
-        <TabControl Width="920" HorizontalAlignment="Left">
+        <TabControl x:Name="MainTabControl" Width="920" HorizontalAlignment="Left">
             <TabControl.Items>
                 <TabItem Header="NUM">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
@@ -131,7 +131,7 @@
                                                 <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
                                                     <TextBlock x:Name="txtBatteryTemperature" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
-                                                <TextBlock Text=" C" Width="30"/>
+                                                <TextBlock Text=" °C" Width="30"/>
                                             </StackPanel>
                                             <!-- WDU Temperature -->
                                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
@@ -139,7 +139,7 @@
                                                 <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
                                                     <TextBlock x:Name="txtWDUTemperature" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
-                                                <TextBlock Text=" C" Width="30"/>
+                                                <TextBlock Text=" °C" Width="30"/>
                                             </StackPanel>
                                             <!-- MCU Temperature -->
                                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
@@ -147,7 +147,7 @@
                                                 <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
                                                     <TextBlock x:Name="txtMCUTemperature" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
-                                                <TextBlock Text=" C" Width="30"/>
+                                                <TextBlock Text=" °C" Width="30"/>
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>
@@ -328,7 +328,7 @@
                                                 <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
                                                     <TextBlock x:Name="txtBatteryTemperatureJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
-                                                <TextBlock Text=" C" Width="30"/>
+                                                <TextBlock Text=" °C" Width="30"/>
                                             </StackPanel>
                                             <!-- WDU Temperature -->
                                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
@@ -336,7 +336,7 @@
                                                 <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
                                                     <TextBlock x:Name="txtWDUTemperatureJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
-                                                <TextBlock Text=" C" Width="30"/>
+                                                <TextBlock Text=" °C" Width="30"/>
                                             </StackPanel>
                                             <!-- MCU Temperature -->
                                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
@@ -344,7 +344,7 @@
                                                 <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
                                                     <TextBlock x:Name="txtMCUTemperatureJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
-                                                <TextBlock Text=" C" Width="30"/>
+                                                <TextBlock Text=" °C" Width="30"/>
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>
@@ -681,6 +681,7 @@
                     <TextBlock Text="There is the CW upload form"/>
                     <TextBlock Text="https:xxxxxxxxxxxxxxx"/>
                     <TextBlock Text="Thank you for your cooperation!"/>
+                    <TextBlock x:Name="TemperatureSymbol" />
                 </StackPanel>
             </controls:Card>
         </StackPanel>
