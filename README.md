@@ -29,6 +29,6 @@ This is an application developed at the Okuyama Laboratory for decoding the CW b
 
 ## Future Implementations
 
-- We aim to implement dynamic operation of the "NUM" and "JAM" tab controls.
+- We aim to implement dynamic operation of the "NUM" and "JAM" tab controls.(2023.9.11 Fixed)
 - OperationMode feature
 - Information section
