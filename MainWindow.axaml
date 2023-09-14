@@ -6,7 +6,7 @@
         x:Class="TENKOH2_BEACON_DECODER_Multi_Platform.MainWindow"
         Width="920"
         Height="770"
-        CanResize="False"
+        CanResize="True"
         Title="TENKOH2_BEACON_DECODER_v1"
         Icon="Images\TK2_icon.ico">
 
@@ -270,6 +270,7 @@
                         </StackPanel>
                     </StackPanel>
                 </TabItem>
+
                 <TabItem Header="JAM">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                         <StackPanel Orientation="Vertical" Width="460" HorizontalAlignment="Left">
@@ -540,7 +541,6 @@
                                 </StackPanel>
                             </controls:Card>
 
-
                             <controls:Card
                                 x:Name="Card6"
                                 Width="440" 
@@ -628,7 +628,6 @@
                                                 </Border>
                                             </StackPanel>
                                         </StackPanel>
-
                                     </Grid>
                                 </StackPanel>
                             </controls:Card>
@@ -637,6 +636,7 @@
                 </TabItem>
             </TabControl.Items>
         </TabControl>
+
         <StackPanel Orientation="Horizontal">
             <controls:Card
                 Width="440" 
@@ -677,14 +677,21 @@
                 Margin="10"> 
                 <StackPanel>
                     <TextBlock Text="Infomation" FontWeight="Bold" FontSize="16"/>
-                    <Image Source="Images\TEN-KOH2.png" Margin="5" Width="300"/>
+                    <Image Source="Images\TEN-KOH2.png" Margin="5" Width="350"/>
                     <TextBlock Text="There is the CW upload form"/>
-                    <TextBlock Text="https:xxxxxxxxxxxxxxx"/>
+                    <Border 
+                        Background="Transparent" 
+                        Cursor="Hand" 
+                        PointerPressed="OnLinkClicked">
+                        <TextBlock 
+                            Text="https://forms.gle/mt5ZkfrqArZmmfVv8" 
+                            Foreground="Blue" 
+                            TextDecorations="Underline" />
+                    </Border>
                     <TextBlock Text="Thank you for your cooperation!"/>
                     <TextBlock x:Name="TemperatureSymbol" />
                 </StackPanel>
             </controls:Card>
         </StackPanel>
-
     </StackPanel> 
 </Window>

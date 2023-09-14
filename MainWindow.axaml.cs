@@ -6,16 +6,11 @@ using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.Metadata;
+using Avalonia.Input;
 // using Newtonsoft.Json;
 
 namespace TENKOH2_BEACON_DECODER_Multi_Platform
 {
-
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    /// 
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -65,7 +60,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             Dictionary<string, string> ProcessStatus(string hexValue, bool isGpioExpanderIdFalse)
             {
                 int decValue = Convert.ToInt32(hexValue, 16);
-                string binary = Convert.ToString(decValue, 2).PadLeft(16, '0');
+                string binary = Convert.ToString(decValue, 2).PadRight(16, '0');
                 List<int> binaryList = new List<int>();
                 foreach (char bit in binary)
                 {
@@ -409,15 +404,15 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                     MainTabControl.SelectedIndex = 1;  // Index 1 corresponds to JAM tab
                 }
                 
-                string hex1 = input.Substring(0, 2);    /// Read GPIO Expander ID
-                string hex2 = input.Substring(2, 3);    /// Status 
-                string hex3 = input.Substring(5, 3);    /// Battery Current
-                string hex4 = input.Substring(8, 3);   /// Battery Voltage
-                string hex5 = input.Substring(11, 3);   /// Battery tempreture
-                string hex6 = input.Substring(14, 4);   /// Mode Timer
-                string hex7 = input.Substring(18, 2);   /// JAMSAT Status
-                string hex8 = input.Substring(20, 3);   /// ADC Voltage
-                string hex9 = input.Substring(23, 3);   /// RF Input VHF-Band
+                string hex1 = input.Substring(0, 2);     /// Read GPIO Expander ID
+                string hex2 = input.Substring(2, 3);     /// Status 
+                string hex3 = input.Substring(5, 3);     /// Battery Current
+                string hex4 = input.Substring(8, 3);     /// Battery Voltage
+                string hex5 = input.Substring(11, 3);    /// Battery tempreture
+                string hex6 = input.Substring(14, 4);    /// Mode Timer
+                string hex7 = input.Substring(18, 2);    /// JAMSAT Status
+                string hex8 = input.Substring(20, 3);    /// ADC Voltage
+                string hex9 = input.Substring(23, 3);    /// RF Input VHF-Band
                 string hex10 = input.Substring(26, 3);   /// RF Output UHF-Band
                 string hex11 = input.Substring(29, 3);   /// RF Output 58G-Band
                 string hex12 = input.Substring(32, 1);   /// Opretion Mode
@@ -778,6 +773,15 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             {
                 indicator.Fill = new SolidColorBrush(Colors.Gray);
             }
+        }
+
+        private void OnLinkClicked(object sender, PointerPressedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "https://forms.gle/mt5ZkfrqArZmmfVv8",
+                UseShellExecute = true
+            });
         }
     }
 
