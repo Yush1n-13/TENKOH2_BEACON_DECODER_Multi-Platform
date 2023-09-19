@@ -7,6 +7,10 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Input;
+using Avalonia.Threading;
+using System.Timers;
+using System.Text.RegularExpressions;
+
 // using Newtonsoft.Json;
 
 namespace TENKOH2_BEACON_DECODER_Multi_Platform
@@ -17,6 +21,8 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
         {
             InitializeComponent();
         }
+
+        public string ReferencedFilePath { get; set; }
 
         private void NUDecodeButton_Click(object sender, RoutedEventArgs e)
         {
@@ -30,12 +36,18 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
             string input = InputTextBox.Text;
 
+            if (!Regex.IsMatch(input, "^[a-fA-F0-9]+$"))
+            {
+                Console.WriteLine("Invalid hexadecimal value.");
+                return;
+            }
+
             /// TimeStamp
             var currentTime = DateTime.Now;
             string timestamp = currentTime.ToString("yyyy/MM/dd HH:mm:ss");
             TimestampTextBox.Text = timestamp;
 
-            OutputTextBox.Text = $"{timestamp}: {input}\n" + OutputTextBox.Text;
+            OutputTextBox.Text = $"{timestamp}: \n{input}\n" + OutputTextBox.Text;
 
             /// #1 Read GPIO Expander ID
             (object, bool) ProcessGpioExpanderId(string hexValue)
@@ -100,7 +112,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
                 return statusResults;
             }
-           
+        
             /// #3 Batterycurrent
             (float, string) ProcessBatteryCurrent(string hexValue)
             {
@@ -149,8 +161,87 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 return (float)Math.Round((double)dec5Temp , 2);
             }
 
-            /// #6 WDU Tempreture
-            /// #7 MCU Tempreture
+            /// #6 EPS Controller Status
+            string ProcessEPSControllerStatus(string hexValue)
+            {
+                string mode;
+
+                switch (hexValue)
+                {
+                    case "2":
+                        mode = "NormalMode";
+                        break;
+                    case "3":
+                        mode = "MissionMode";
+                        break;
+                    case "4":
+                        mode = "EmergencyMode";
+                        break;
+                    default:
+                        mode = "Invalid";
+                        break;
+                }
+
+                return mode;
+            }
+             
+            /// #7 Subsystem Interface Status
+            Dictionary<string, string> ProcessSubsystemInterfaceStatus(string hexValue)
+            {
+                int decValue = Convert.ToInt32(hexValue, 16);
+                string binary = Convert.ToString(decValue, 2).PadRight(16, '0');
+                List<int> binaryList = new List<int>();
+                foreach (char bit in binary)
+                {
+                    binaryList.Add(int.Parse(bit.ToString()));
+                }
+
+                var bitResultList = new List<string>();
+                foreach (int v in binaryList)
+                {
+                    string bitResult = v == 0 ? "FAULT" : "STABLE";
+                    bitResultList.Add(bitResult);
+                }
+
+                var statusResults = new Dictionary<string, string>
+                {
+                    {"I2C_RTC", bitResultList[0]},
+                    {"I2C_MEM", bitResultList[1]},
+                    {"I2C_EPSC", bitResultList[2]},
+                    {"I2C_COM", bitResultList[3]},
+                    {"I2C_ANT", bitResultList[4]},
+                    {"I2C_IFPV", bitResultList[5]},
+                    {"I2C_ADCS", bitResultList[6]},
+                    {"I2C_CAM", bitResultList[7]},
+                    {"I2C_MATLIU", bitResultList[8]},
+                    {"I2C_NU", bitResultList[9]},
+                    {"UART_JAMSAT", bitResultList[10]}
+                };
+
+                bool allSystemsOk = true;
+                foreach (var status in statusResults)
+                {
+                    if (status.Value == "FAULT")
+                    {
+                        allSystemsOk = false;
+                        break;
+                    }
+                }
+
+                if (allSystemsOk)
+                {
+                    statusResults.Add("System Check", "All Systems Operational");
+                }
+                else
+                {
+                    statusResults.Add("System Check", "Subsystem Interface Error Detected");
+                }
+
+                return statusResults;
+            }
+            
+            /// #8 WDU Tempreture
+            /// #9 MCU Tempreture
             float ProcessTemperature(string hexValue)
             {
                 const float VOLTAGE_CONVERSION_FACTOR = 4.97f / 1024f;
@@ -162,13 +253,13 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 return (float)Math.Round((double)decTemp , 2);
             }
 
-            /// #8 Opretion Mode
+            /// #10 Opretion Mode
             string ProcessOperationMode()
             {
                 return "TK";
             }
 
-            /// #9 Mode Timer
+            /// #11 Mode Timer
             (int, object) ProcessModeTimer(string hexValue)
             {
                 const float VOLTAGE_CONVERSION_FACTOR = 60f;
@@ -200,7 +291,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 var bitResultListJam = new List<string>();
                 foreach (int v in binaryListJam)
                 {   
-                    string bitResultJam = v == 0 ? "ON" : "OFF";
+                    string bitResultJam = v == 0 ? "ACTIVE" : "INACTIVE";
                     bitResultListJam.Add(bitResultJam);
                 }
 
@@ -270,7 +361,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 }
             }
 
-            if (input.Length == 21)
+            if (input.Length == 25)
             {
                 // Switch to NUM tab when input is 21 characters
                 if (MainTabControl != null)
@@ -281,11 +372,13 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 string hex1 = input.Substring(0, 2);    /// Read GPIO Expander ID
                 string hex2 = input.Substring(2, 3);    /// Status 
                 string hex3 = input.Substring(5, 3);    /// Battery Current
-                string hex4 = input.Substring(8, 3);   /// Battery Voltage
+                string hex4 = input.Substring(8, 3);    /// Battery Voltage
                 string hex5 = input.Substring(11, 3);   /// Battery tempreture
-                string hex6 = input.Substring(14, 3);   /// WDU Tempreture
-                string hex7 = input.Substring(17, 3);   /// MCU Tempreture
-                string hex8 = input.Substring(20, 1);   /// Opreation mode
+                string hex6 = input.Substring(14, 1);   /// EPS Controller Status
+                string hex7 = input.Substring(15, 3);   /// Subsystem INterface Status
+                string hex8 = input.Substring(18, 3);   /// WDU Tempreture
+                string hex9 = input.Substring(21, 3);   /// MCU Tempreture
+                string hex10 = input.Substring(24, 1);   /// Opreation mode
                 
                 /// #1 Read GPIO Expander ID
                 (object dec1, bool isGpioExpanderIdFalse) = ProcessGpioExpanderId(hex1);
@@ -325,14 +418,32 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 /// #5 BatteryTempreture
                 float roundeddec5Temp = ProcessBatteryTemperature(hex5);
 
-                /// #6 WDU Tempreture
-                float roundeddec6Temp = ProcessTemperature(hex6);
+                /// #6 EPS Controller Status
+                string dec6 = ProcessEPSControllerStatus(hex6);
 
-                /// #7 MCU Tempreture
-                float roundeddec7Temp = ProcessTemperature(hex7);
+                /// #7 Subsystem Interface Status
+                var subsystemInterfaceStatusResults = ProcessSubsystemInterfaceStatus(hex7);
+                string bitResultI2CRTC = subsystemInterfaceStatusResults["I2C_RTC"];
+                string bitResultI2CMEM = subsystemInterfaceStatusResults["I2C_MEM"];
+                string bitResultI2CEPSC = subsystemInterfaceStatusResults["I2C_EPSC"];
+                string bitResultI2CCOM = subsystemInterfaceStatusResults["I2C_COM"];
+                string bitResultI2CANT = subsystemInterfaceStatusResults["I2C_ANT"];
+                string bitResultI2CIFPV = subsystemInterfaceStatusResults["I2C_IFPV"];
+                string bitResultI2CADCS = subsystemInterfaceStatusResults["I2C_ADCS"];
+                string bitResultI2CCAM = subsystemInterfaceStatusResults["I2C_CAM"];
+                string bitResultI2CMATLIU = subsystemInterfaceStatusResults["I2C_MATLIU"];
+                string bitResultI2CNU = subsystemInterfaceStatusResults["I2C_NU"];
+                string bitResultUARTJAMSAT = subsystemInterfaceStatusResults["UART_JAMSAT"];
+                string bitResultSystemcheck = subsystemInterfaceStatusResults["System Check"];
+
+                /// #8 WDU Tempreture
+                float roundeddec8Temp = ProcessTemperature(hex8);
+
+                /// #9 MCU Tempreture
+                float roundeddec9Temp = ProcessTemperature(hex9);
 
                 /// #8 Opretion Mode
-                hex8 = ProcessOperationMode();
+                hex10 = ProcessOperationMode();
 
                 /// Rabel
                 txtGPIOExpander.Text = dec1.ToString();
@@ -340,9 +451,10 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 txtBatteryStatus.Text = batteryStatus.ToString();
                 txtBatteryVoltage.Text = roundeddec4Volt.ToString();
                 txtBatteryTemperature.Text = roundeddec5Temp.ToString();
-                txtWDUTemperature.Text = roundeddec6Temp.ToString();
-                txtMCUTemperature.Text = roundeddec7Temp.ToString();
-                txtOperationMode.Text = hex8.ToString();
+                txtWDUTemperature.Text = roundeddec8Temp.ToString();
+                txtMCUTemperature.Text = roundeddec9Temp.ToString();
+                txtEPSControllerStatus.Text = dec6.ToString();
+                txtOperationMode.Text = hex10.ToString();
 
                 txt5VCAM.Text = bitResult5VCAM.ToString();
                 txt5VPL.Text = bitResult5VPL.ToString();
@@ -366,6 +478,33 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 UpdateStatusIndicator(txt12VADCS, statusIndicator12VADCS);
                 UpdateStatusIndicator(txt12VLIU, statusIndicator12VLIU);
 
+                txtSystemCheck.Text = bitResultSystemcheck.ToString();
+
+                txtI2CRTC.Text = bitResultI2CRTC.ToString();
+                txtI2CMEM.Text = bitResultI2CMEM.ToString();
+                txtI2CEPSC.Text = bitResultI2CEPSC.ToString();
+                txtI2CCOM.Text = bitResultI2CCOM.ToString();
+                txtI2CANT.Text = bitResultI2CANT.ToString();
+                txtI2CIFPV.Text = bitResultI2CIFPV.ToString();
+                txtI2CADCS.Text = bitResultI2CADCS.ToString();
+                txtI2CCAM.Text = bitResultI2CCAM.ToString();
+                txtI2CMATLIU.Text = bitResultI2CMATLIU.ToString();
+                txtI2CNU.Text = bitResultI2CNU.ToString();
+                txtUARTJAMSAT.Text = bitResultUARTJAMSAT.ToString();
+                
+                UpdateStatusIndicator(txtI2CRTC, statusIndicatorI2CRTC);
+                UpdateStatusIndicator(txtI2CMEM, statusIndicatorI2CMEM);
+                UpdateStatusIndicator(txtI2CEPSC, statusIndicatorI2CEPSC);
+                UpdateStatusIndicator(txtI2CCOM, statusIndicatorI2CCOM);
+                UpdateStatusIndicator(txtI2CANT, statusIndicatorI2CANT);
+                UpdateStatusIndicator(txtI2CIFPV, statusIndicatorI2CIFPV);
+                UpdateStatusIndicator(txtI2CADCS, statusIndicatorI2CADCS);
+                UpdateStatusIndicator(txtI2CCAM, statusIndicatorI2CCAM);
+                UpdateStatusIndicator(txtI2CMATLIU, statusIndicatorI2CMATLIU);
+                UpdateStatusIndicator(txtI2CNU, statusIndicatorI2CNU);
+                UpdateStatusIndicator(txtUARTJAMSAT, statusIndicatorUARTJAMSAT);
+
+
                 LogData logData = new LogData
                 {
                     Callsign = "JS1YKI",
@@ -376,8 +515,8 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                     BatteryStatus = batteryStatus,
                     BatteryVoltage = roundeddec4Volt,
                     BatteryTemperature = roundeddec5Temp,
-                    WDUTemperature = roundeddec6Temp,
-                    MCUTemperature = roundeddec7Temp,
+                    WDUTemperature = roundeddec8Temp,
+                    MCUTemperature = roundeddec9Temp,
                     OperationMode = hex8,
                     StatusBits = new StatusBitsData
                     {
@@ -633,9 +772,12 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             ClearTextControls(
                 TimestampTextBox,
                 txtGPIOExpander, txtBatteryCurrent, txtBatteryStatus, txtBatteryVoltage,
-                txtBatteryTemperature, txtWDUTemperature, txtMCUTemperature, txtOperationMode,
+                txtBatteryTemperature, txtWDUTemperature, txtMCUTemperature, txtEPSControllerStatus, txtOperationMode,
                 txt5VCAM, txt5VPL, txt5VNUM, txt3V3JAMSAT, txt3V3ADCS, txt5VOBC, txt5VADCS,
                 txt5VCOM, txt12VADCS, txt12VLIU,
+                txtSystemCheck,
+                txtI2CRTC, txtI2CMEM, txtI2CEPSC, txtI2CCOM, txtI2CANT, txtI2CIFPV,
+                txtI2CADCS, txtI2CCAM, txtI2CMATLIU, txtI2CNU, txtUARTJAMSAT,
                 txtGPIOExpanderJ, txtBatteryCurrentJ, txtBatteryStatusJ, txtBatteryVoltageJ, txtBatteryTemperatureJ,
                 txtWDUTemperatureJ, txtMCUTemperatureJ, txtOperationModeJ, txt5VCAMJ, txt5VPLJ, txt5VNUMJ,
                 txt3V3JAMSATJ, txt3V3ADCSJ, txt5VOBCJ, txt5VADCSJ, txt5VCOMJ, txt12VADCSJ, txt12VLIUJ, 
@@ -671,7 +813,18 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 (txtVC2ON, statusIndicatorVC2ON),
                 (txtAMPEN, statusIndicatorAMPEN),
                 (txt58GON, statusIndicator58GON),
-                (txtUHFCWON, statusIndicatorUHFCWON)
+                (txtUHFCWON, statusIndicatorUHFCWON),
+                (txtI2CRTC, statusIndicatorI2CRTC),
+                (txtI2CMEM, statusIndicatorI2CMEM),
+                (txtI2CEPSC, statusIndicatorI2CEPSC),
+                (txtI2CCOM, statusIndicatorI2CCOM),
+                (txtI2CANT, statusIndicatorI2CANT),
+                (txtI2CIFPV, statusIndicatorI2CIFPV),
+                (txtI2CADCS, statusIndicatorI2CADCS),
+                (txtI2CCAM, statusIndicatorI2CCAM),
+                (txtI2CMATLIU, statusIndicatorI2CMATLIU),
+                (txtI2CNU, statusIndicatorI2CNU),
+                (txtUARTJAMSAT, statusIndicatorUARTJAMSAT)
             );
         }
 
@@ -761,11 +914,11 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
         private void UpdateStatusIndicator(TextBlock txtBlock, Ellipse indicator)
         {
-            if (txtBlock.Text == "ON")
+            if (txtBlock.Text == "ON" || txtBlock.Text == "ACTIVE" || txtBlock.Text == "STABLE")
             {
                 indicator.Fill = new SolidColorBrush(Colors.Green);
             }
-            else if (txtBlock.Text == "OFF")
+            else if (txtBlock.Text == "OFF" || txtBlock.Text == "INACTIVE" || txtBlock.Text == "FAULT")
             {
                 indicator.Fill = new SolidColorBrush(Colors.Red);
             }
@@ -782,6 +935,143 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 FileName = "https://forms.gle/mt5ZkfrqArZmmfVv8",
                 UseShellExecute = true
             });
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            RadioButton radioButton = sender as RadioButton;
+            if (radioButton == null) return;
+
+            if (radioButton == ManualInputRadio)
+            {
+                Console.WriteLine("ManualInputRadio selected");
+                InputTextBox.IsReadOnly = false;
+                InputTextBox.Text = "";
+                ResetUI();
+            }
+            else if (radioButton == AutomaticInputRadio)
+            {
+                Console.WriteLine("AutomaticInputRadio selected");
+                InputTextBox.IsReadOnly = true;
+                InputTextBox.Text = "";
+                ResetUI();
+
+                var settingsWindow = new SettingsWindow();
+                settingsWindow.ShowDialog(this);
+
+                StartPolling();
+            }
+        }
+
+        private void RadioButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine($"{(sender as RadioButton).Name} is unchecked.");
+        }
+
+        enum DataState
+        {
+            Initial,
+            WaitingForNewData,
+            DataFound
+        }
+        
+        private DataState _currentState = DataState.Initial;
+
+        private void StartPolling()
+        {
+            Timer _timer;
+            _timer = new Timer(2000); // 2 seconds
+            _timer.Elapsed += PollFile;
+            _timer.AutoReset = true;
+            _timer.Start();
+        }
+
+        private void PollFile(object sender, ElapsedEventArgs e)
+        {
+            
+            if (string.IsNullOrWhiteSpace(ReferencedFilePath))
+            {
+                return; 
+            }
+            
+            string TargetFilePath = ReferencedFilePath;
+            var content = ReadFileContentWithRetry(TargetFilePath);
+            int lastIndex = content.LastIndexOf("JS1YKI:");
+
+            // If "JS1YKI:" is found and there's enough content after it
+            if (lastIndex != -1 && content.Length >= lastIndex + 28) // +7 for "JS1YKI:" and +22 for data
+            {
+                string extractedData = content.Substring(lastIndex + 7, 21);
+
+                switch (_currentState)
+                {
+                    case DataState.Initial:
+                        Dispatcher.UIThread.InvokeAsync(() => 
+                        {
+                            InputTextBox.Text = "";
+                            ResetUI();
+                            System.Threading.Thread.Sleep(500);
+                            InputTextBox.Text = extractedData; 
+                            NUDecodeButton_Click(null, null); 
+                        });
+                        _currentState = DataState.WaitingForNewData;
+                        break;
+
+                    case DataState.WaitingForNewData:
+                        _currentState = DataState.DataFound;
+                        break;
+
+                    case DataState.DataFound:                       
+                        if (content.Substring(lastIndex + 7, 21) != extractedData)
+                        {
+                            _currentState = DataState.Initial;
+                            return;
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                _currentState = DataState.Initial;
+            }
+        }
+
+        private string ReadFileContentWithRetry(string path, int maxRetries = 3, int delayOnRetry = 500)
+        {
+            for (int i = 0; i < maxRetries; i++)
+            {
+                try
+                {
+                    using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    using (var streamReader = new StreamReader(fileStream))
+                    {
+                        return streamReader.ReadToEnd();
+                    }
+                }
+                catch (IOException ex)
+                {
+                    if (i == maxRetries - 1)
+                        throw;
+                    System.Threading.Thread.Sleep(delayOnRetry);
+                    Console.WriteLine($"IOException encountered: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Exception encountered: {ex.Message}");
+                }
+            }
+            return null;
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            var settingsWindow = new SettingsWindow();
+            settingsWindow.ShowDialog(this);
+        }
+
+        public void UpdateReferencedFilePath(string path)
+        {
+            ReferencedFilePath = path;
         }
     }
 
@@ -810,7 +1100,6 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
         public object RFOutputUHF { get; set; }
         public object RFOutput58G { get; set; }
     }
-
 
     public class StatusBitsData
     {

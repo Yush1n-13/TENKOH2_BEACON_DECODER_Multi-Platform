@@ -31,10 +31,12 @@
   </ItemGroup>
 
   <ItemGroup>
-      <AvaloniaResource Include="Images\TK2.png"/>
-      <AvaloniaResource Include="Images\TK2_icon.ico"/>
-      <AvaloniaResource Include="Images\TEN-KOH2.png"/>
-      <AvaloniaResource Include="Images\TK2_Satellite.png"/>
+    <!--AvaloniaResource Include="SettingsWindow.axaml"/-->
+
+    <AvaloniaResource Include="Images\TK2.png"/>
+    <AvaloniaResource Include="Images\TK2_icon.ico"/>
+    <AvaloniaResource Include="Images\TEN-KOH2.png"/>
+    <AvaloniaResource Include="Images\TK2_Satellite.png"/>
   </ItemGroup>
 
 </Project>

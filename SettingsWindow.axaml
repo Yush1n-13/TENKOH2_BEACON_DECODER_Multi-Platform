@@ -1,0 +1,16 @@
+<Window 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:p1="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+    xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+
+    x:Class="TENKOH2_BEACON_DECODER_Multi_Platform.SettingsWindow"
+    Title="config" Width="500" Height="300">
+
+    <StackPanel Orientation="Horizontal">
+        <TextBox x:Name="PathTextBox" Width="260" p1:TextFieldAssist.Label="Insert Target File Path"/>
+        <Button Content="Browse" Width="100" Margin="5" Click="BrowseButton_Click" HorizontalAlignment="Right"/>
+        <Button Content="Save" Width="100" Margin="5" Click="ApplyButton_Click" HorizontalAlignment="Right"/>
+    </StackPanel>
+
+</Window>
