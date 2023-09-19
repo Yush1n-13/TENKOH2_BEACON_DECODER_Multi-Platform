@@ -34,7 +34,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             var dialog = new OpenFileDialog();
             var result = await dialog.ShowAsync(this);
             
-            if (result != null)
+            if (result != null && result.Length > 0)
             {
                 PathTextBox.Text = result[0];
             }

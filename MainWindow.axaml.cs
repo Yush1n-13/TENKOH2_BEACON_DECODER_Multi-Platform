@@ -361,6 +361,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 }
             }
 
+            /// Nominal NUM Mode
             if (input.Length == 25)
             {
                 // Switch to NUM tab when input is 21 characters
@@ -517,7 +518,8 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                     BatteryTemperature = roundeddec5Temp,
                     WDUTemperature = roundeddec8Temp,
                     MCUTemperature = roundeddec9Temp,
-                    OperationMode = hex8,
+                    EPSControllerStatus = dec6,
+                    OperationMode = hex10,
                     StatusBits = new StatusBitsData
                     {
                         _5V_CAM = bitResult5VCAM,
@@ -530,12 +532,28 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                         _5V_COM = bitResult5VCOM,
                         _12V_ADCS = bitResult12VADCS,
                         _12V_LIU = bitResult12VLIU
+                    },
+                    SubsystemInterfaceStatusBits = new SubsystemInterfaceStatusBitsData
+                    {
+                        SystemCheck = bitResultSystemcheck,
+                        _I2C_RTC = bitResultI2CRTC,
+                        _I2C_MEM = bitResultI2CMEM,
+                        _I2C_EPSC = bitResultI2CEPSC,
+                        _I2C_COM = bitResultI2CCOM,
+                        _I2C_ANT = bitResultI2CANT,
+                        _I2C_IFPV = bitResultI2CIFPV,
+                        _I2C_ADCS = bitResultI2CADCS,
+                        _I2C_CAM = bitResultI2CCAM,
+                        _I2C__MATLIU = bitResultI2CMATLIU,
+                        _I2C_NU = bitResultI2CNU,
+                        _UART_JAMSAT = bitResultUARTJAMSAT
                     }
                 };
                 SaveLogData(logData);
             }
 
-            else if (input.Length == 33)
+            /// JAMSAT Mission Mode
+            else if (input.Length == 37)
             {
                 // Switch to JAM tab when input is 33 characters
                 if (MainTabControl != null)
@@ -548,13 +566,15 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 string hex3 = input.Substring(5, 3);     /// Battery Current
                 string hex4 = input.Substring(8, 3);     /// Battery Voltage
                 string hex5 = input.Substring(11, 3);    /// Battery tempreture
-                string hex6 = input.Substring(14, 4);    /// Mode Timer
-                string hex7 = input.Substring(18, 2);    /// JAMSAT Status
-                string hex8 = input.Substring(20, 3);    /// ADC Voltage
-                string hex9 = input.Substring(23, 3);    /// RF Input VHF-Band
-                string hex10 = input.Substring(26, 3);   /// RF Output UHF-Band
-                string hex11 = input.Substring(29, 3);   /// RF Output 58G-Band
-                string hex12 = input.Substring(32, 1);   /// Opretion Mode
+                string hex6 = input.Substring(14, 1);    /// Battery tempreture
+                string hex7 = input.Substring(15, 3);    /// Battery tempreture
+                string hex8 = input.Substring(18, 4);    /// Mode Timer
+                string hex9 = input.Substring(22, 2);    /// JAMSAT Status
+                string hex10 = input.Substring(24, 3);    /// ADC Voltage
+                string hex11 = input.Substring(27, 3);    /// RF Input VHF-Band
+                string hex12 = input.Substring(30, 3);   /// RF Output UHF-Band
+                string hex13 = input.Substring(33, 3);   /// RF Output 58G-Band
+                string hex14 = input.Substring(36, 1);   /// Opretion Mode
                 
                 /// #1 Read GPIO Expander ID
                 (object dec1, bool isGpioExpanderIdFalse) = ProcessGpioExpanderId(hex1);
@@ -594,11 +614,29 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 /// #5 BatteryTempreture
                 float roundeddec5Temp = ProcessBatteryTemperature(hex5);
 
+                /// #6 EPS Controller Status
+                string dec6 = ProcessEPSControllerStatus(hex6);
+
+                /// #7 Subsystem Interface Status
+                var subsystemInterfaceStatusResults = ProcessSubsystemInterfaceStatus(hex7);
+                string bitResultI2CRTC = subsystemInterfaceStatusResults["I2C_RTC"];
+                string bitResultI2CMEM = subsystemInterfaceStatusResults["I2C_MEM"];
+                string bitResultI2CEPSC = subsystemInterfaceStatusResults["I2C_EPSC"];
+                string bitResultI2CCOM = subsystemInterfaceStatusResults["I2C_COM"];
+                string bitResultI2CANT = subsystemInterfaceStatusResults["I2C_ANT"];
+                string bitResultI2CIFPV = subsystemInterfaceStatusResults["I2C_IFPV"];
+                string bitResultI2CADCS = subsystemInterfaceStatusResults["I2C_ADCS"];
+                string bitResultI2CCAM = subsystemInterfaceStatusResults["I2C_CAM"];
+                string bitResultI2CMATLIU = subsystemInterfaceStatusResults["I2C_MATLIU"];
+                string bitResultI2CNU = subsystemInterfaceStatusResults["I2C_NU"];
+                string bitResultUARTJAMSAT = subsystemInterfaceStatusResults["UART_JAMSAT"];
+                string bitResultSystemcheck = subsystemInterfaceStatusResults["System Check"];
+
                 /// #9 Mode Timer
-                var (dec6Time, dec6OpMode) = ProcessModeTimer(hex6);
+                var (dec6Time, dec6OpMode) = ProcessModeTimer(hex8);
 
                 /// #10 JAMSAT Status 
-                var jamStatusResults = ProcessJAMSATStatus(hex7);
+                var jamStatusResults = ProcessJAMSATStatus(hex9);
                 string bitResultVC1LOCK = jamStatusResults["bitResultVC1LOCK"];
                 string bitResultVC2LOCK = jamStatusResults["bitResultVC2LOCK"];
                 string bitResult7021LOCK = jamStatusResults["bitResult7021LOCK"];
@@ -618,19 +656,19 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 /// bit7 | UHFCW_ON
 
                 /// #11 ADC Volatge
-                float roundeddec8ADCVolt = ProcessADCVoltage(hex8);
+                float roundeddec10ADCVolt = ProcessADCVoltage(hex10);
 
                 /// #12 RF Input VHF-Band
-                float roundeddec9RF = ProcessRFInputVHF(hex9);
+                float roundeddec11RF = ProcessRFInputVHF(hex11);
 
                 /// #13 RF Output UHF-Band
-                object roundeddec10RF = ProcessRFOutputUHF(hex10);
+                object roundeddec12RF = ProcessRFOutputUHF(hex12);
                 
                 /// #14 RF Output 58G
-                object roundeddec11RF = ProcessRFOutput58G(hex11);
+                object roundeddec13RF = ProcessRFOutput58G(hex13);
 
                 /// #15(8) Opretion Mode
-                hex12 = ProcessOperationMode();
+                hex14 = ProcessOperationMode();
 
                 /// Rabel
                 txtGPIOExpanderJ.Text = dec1.ToString();
@@ -638,9 +676,10 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 txtBatteryStatusJ.Text = batteryStatus.ToString();
                 txtBatteryVoltageJ.Text = roundeddec4Volt.ToString();
                 txtBatteryTemperatureJ.Text = roundeddec5Temp.ToString();
+                txtEPSControllerStatusJ.Text = dec6.ToString();
                 txtWDUTemperatureJ.Text = "---";
                 txtMCUTemperatureJ.Text = "---";
-                txtOperationModeJ.Text = hex12.ToString();
+                txtOperationModeJ.Text = hex14.ToString();
 
                 txt5VCAMJ.Text = bitResult5VCAM.ToString();
                 txt5VPLJ.Text = bitResult5VPL.ToString();
@@ -664,12 +703,38 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 UpdateStatusIndicator(txt12VADCSJ, statusIndicator12VADCSJ);
                 UpdateStatusIndicator(txt12VLIUJ, statusIndicator12VLIUJ);
 
+                txtSystemCheckJ.Text = bitResultSystemcheck.ToString();
+
+                txtI2CRTCJ.Text = bitResultI2CRTC.ToString();
+                txtI2CMEMJ.Text = bitResultI2CMEM.ToString();
+                txtI2CEPSCJ.Text = bitResultI2CEPSC.ToString();
+                txtI2CCOMJ.Text = bitResultI2CCOM.ToString();
+                txtI2CANTJ.Text = bitResultI2CANT.ToString();
+                txtI2CIFPVJ.Text = bitResultI2CIFPV.ToString();
+                txtI2CADCSJ.Text = bitResultI2CADCS.ToString();
+                txtI2CCAMJ.Text = bitResultI2CCAM.ToString();
+                txtI2CMATLIUJ.Text = bitResultI2CMATLIU.ToString();
+                txtI2CNUJ.Text = bitResultI2CNU.ToString();
+                txtUARTJAMSATJ.Text = bitResultUARTJAMSAT.ToString();
+                
+                UpdateStatusIndicator(txtI2CRTCJ, statusIndicatorI2CRTCJ);
+                UpdateStatusIndicator(txtI2CMEMJ, statusIndicatorI2CMEMJ);
+                UpdateStatusIndicator(txtI2CEPSCJ, statusIndicatorI2CEPSCJ);
+                UpdateStatusIndicator(txtI2CCOMJ, statusIndicatorI2CCOMJ);
+                UpdateStatusIndicator(txtI2CANTJ, statusIndicatorI2CANTJ);
+                UpdateStatusIndicator(txtI2CIFPVJ, statusIndicatorI2CIFPVJ);
+                UpdateStatusIndicator(txtI2CADCSJ, statusIndicatorI2CADCSJ);
+                UpdateStatusIndicator(txtI2CCAMJ, statusIndicatorI2CCAMJ);
+                UpdateStatusIndicator(txtI2CMATLIUJ, statusIndicatorI2CMATLIUJ);
+                UpdateStatusIndicator(txtI2CNUJ, statusIndicatorI2CNUJ);
+                UpdateStatusIndicator(txtUARTJAMSATJ, statusIndicatorUARTJAMSATJ);
+
                 txtModeTimer.Text = dec6Time.ToString();
                 txtModeTimerOP.Text = dec6OpMode.ToString();
-                txtADCVoltage.Text = roundeddec8ADCVolt.ToString();
-                txtRFInput.Text = roundeddec9RF.ToString();
-                txtRFOutputUHF.Text = roundeddec10RF.ToString();
-                txtRFOutput58G.Text = roundeddec11RF.ToString();
+                txtADCVoltage.Text = roundeddec10ADCVolt.ToString();
+                txtRFInput.Text = roundeddec11RF.ToString();
+                txtRFOutputUHF.Text = roundeddec12RF.ToString();
+                txtRFOutput58G.Text = roundeddec13RF.ToString();
 
                 txtVC1LOCK.Text = bitResultVC1LOCK.ToString();
                 txtVC2LOCK.Text = bitResultVC2LOCK.ToString();
@@ -701,6 +766,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                     WDUTemperature = "---", // Data not provided.
                     MCUTemperature = "---", // Data not provided.
                     OperationMode = hex12,
+                    EPSControllerStatus = dec6,
                     StatusBits = new StatusBitsData
                     {
                         _5V_CAM = bitResult5VCAM,
@@ -713,6 +779,21 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                         _5V_COM = bitResult5VCOM,
                         _12V_ADCS = bitResult12VADCS,
                         _12V_LIU = bitResult12VLIU
+                    },
+                    SubsystemInterfaceStatusBits = new SubsystemInterfaceStatusBitsData
+                    {
+                        SystemCheck = bitResultSystemcheck,
+                        _I2C_RTC = bitResultI2CRTC,
+                        _I2C_MEM = bitResultI2CMEM,
+                        _I2C_EPSC = bitResultI2CEPSC,
+                        _I2C_COM = bitResultI2CCOM,
+                        _I2C_ANT = bitResultI2CANT,
+                        _I2C_IFPV = bitResultI2CIFPV,
+                        _I2C_ADCS = bitResultI2CADCS,
+                        _I2C_CAM = bitResultI2CCAM,
+                        _I2C__MATLIU = bitResultI2CMATLIU,
+                        _I2C_NU = bitResultI2CNU,
+                        _UART_JAMSAT = bitResultUARTJAMSAT
                     },
                     JamsatStatusBits = new JamsatStatusBitsData
                     {
@@ -727,10 +808,10 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                     },
                     JamsatTelemetry = new JamsatTelemetryData
                     {
-                        ADCVoltage = roundeddec8ADCVolt,
-                        RFInput = roundeddec9RF,
-                        RFOutputUHF = roundeddec10RF,
-                        RFOutput58G = roundeddec11RF
+                        ADCVoltage = roundeddec10ADCVolt,
+                        RFInput = roundeddec11RF,
+                        RFOutputUHF = roundeddec12RF,
+                        RFOutput58G = roundeddec13RF
                     }
                 };
 
@@ -773,14 +854,14 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 TimestampTextBox,
                 txtGPIOExpander, txtBatteryCurrent, txtBatteryStatus, txtBatteryVoltage,
                 txtBatteryTemperature, txtWDUTemperature, txtMCUTemperature, txtEPSControllerStatus, txtOperationMode,
-                txt5VCAM, txt5VPL, txt5VNUM, txt3V3JAMSAT, txt3V3ADCS, txt5VOBC, txt5VADCS,
-                txt5VCOM, txt12VADCS, txt12VLIU,
+                txt5VCAM, txt5VPL, txt5VNUM, txt3V3JAMSAT, txt3V3ADCS, txt5VOBC, txt5VADCS, txt5VCOM, txt12VADCS, txt12VLIU,
                 txtSystemCheck,
-                txtI2CRTC, txtI2CMEM, txtI2CEPSC, txtI2CCOM, txtI2CANT, txtI2CIFPV,
-                txtI2CADCS, txtI2CCAM, txtI2CMATLIU, txtI2CNU, txtUARTJAMSAT,
-                txtGPIOExpanderJ, txtBatteryCurrentJ, txtBatteryStatusJ, txtBatteryVoltageJ, txtBatteryTemperatureJ,
-                txtWDUTemperatureJ, txtMCUTemperatureJ, txtOperationModeJ, txt5VCAMJ, txt5VPLJ, txt5VNUMJ,
-                txt3V3JAMSATJ, txt3V3ADCSJ, txt5VOBCJ, txt5VADCSJ, txt5VCOMJ, txt12VADCSJ, txt12VLIUJ, 
+                txtI2CRTC, txtI2CMEM, txtI2CEPSC, txtI2CCOM, txtI2CANT, txtI2CIFPV, txtI2CADCS, txtI2CCAM, txtI2CMATLIU, txtI2CNU, txtUARTJAMSAT,
+                txtGPIOExpanderJ, txtBatteryCurrentJ, txtBatteryStatusJ, txtBatteryVoltageJ,
+                txtBatteryTemperatureJ, txtWDUTemperatureJ, txtMCUTemperatureJ, txtEPSControllerStatusJ, txtOperationModeJ, 
+                txtSystemCheckJ,
+                txtI2CRTCJ, txtI2CMEMJ, txtI2CEPSCJ, txtI2CCOMJ, txtI2CANTJ, txtI2CIFPVJ, txtI2CADCSJ, txtI2CCAMJ, txtI2CMATLIUJ, txtI2CNUJ, txtUARTJAMSATJ,               
+                txt5VCAMJ, txt5VPLJ, txt5VNUMJ, txt3V3JAMSATJ, txt3V3ADCSJ, txt5VOBCJ, txt5VADCSJ, txt5VCOMJ, txt12VADCSJ, txt12VLIUJ, 
                 txtModeTimer, txtModeTimerOP, txtADCVoltage, txtRFInput, txtRFOutputUHF, txtRFOutput58G,
                 txtVC1LOCK, txtVC2LOCK, txt7021LOCK, txt58GLOCK, txtVC2ON, txtAMPEN, txt58GON, txtUHFCWON
             );
@@ -824,7 +905,18 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 (txtI2CCAM, statusIndicatorI2CCAM),
                 (txtI2CMATLIU, statusIndicatorI2CMATLIU),
                 (txtI2CNU, statusIndicatorI2CNU),
-                (txtUARTJAMSAT, statusIndicatorUARTJAMSAT)
+                (txtUARTJAMSAT, statusIndicatorUARTJAMSAT),
+                (txtI2CRTCJ, statusIndicatorI2CRTCJ),
+                (txtI2CMEMJ, statusIndicatorI2CMEMJ),
+                (txtI2CEPSCJ, statusIndicatorI2CEPSCJ),
+                (txtI2CCOMJ, statusIndicatorI2CCOMJ),
+                (txtI2CANTJ, statusIndicatorI2CANTJ),
+                (txtI2CIFPVJ, statusIndicatorI2CIFPVJ),
+                (txtI2CADCSJ, statusIndicatorI2CADCSJ),
+                (txtI2CCAMJ, statusIndicatorI2CCAMJ),
+                (txtI2CMATLIUJ, statusIndicatorI2CMATLIUJ),
+                (txtI2CNUJ, statusIndicatorI2CNUJ),
+                (txtUARTJAMSATJ, statusIndicatorUARTJAMSATJ)
             );
         }
 
@@ -850,6 +942,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                     dummyObjectAccess = logData.WDUTemperature;
                     dummyObjectAccess = logData.MCUTemperature;
                     dummyAccess = logData.OperationMode;
+                    dummyAccess = logData.EPSControllerStatus;
 
                     if (logData.JamsatTelemetry != null)
                         {
@@ -869,6 +962,19 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                     dummyAccess = logData.StatusBits?._5V_COM;
                     dummyAccess = logData.StatusBits?._12V_ADCS;
                     dummyAccess = logData.StatusBits?._12V_LIU;
+
+                    dummyAccess = logData.SubsystemInterfaceStatusBits?.SystemCheck;
+                    dummyAccess = logData.SubsystemInterfaceStatusBits?._I2C_RTC;
+                    dummyAccess = logData.SubsystemInterfaceStatusBits?._I2C_MEM;
+                    dummyAccess = logData.SubsystemInterfaceStatusBits?._I2C_EPSC;
+                    dummyAccess = logData.SubsystemInterfaceStatusBits?._I2C_COM;
+                    dummyAccess = logData.SubsystemInterfaceStatusBits?._I2C_ANT;
+                    dummyAccess = logData.SubsystemInterfaceStatusBits?._I2C_IFPV;
+                    dummyAccess = logData.SubsystemInterfaceStatusBits?._I2C_ADCS;
+                    dummyAccess = logData.SubsystemInterfaceStatusBits?._I2C_CAM;
+                    dummyAccess = logData.SubsystemInterfaceStatusBits?._I2C__MATLIU;
+                    dummyAccess = logData.SubsystemInterfaceStatusBits?._I2C_NU;
+                    dummyAccess = logData.SubsystemInterfaceStatusBits?._UART_JAMSAT;
 
                     dummyAccess = logData.JamsatStatusBits?._VC1_LOCK;
                     dummyAccess = logData.JamsatStatusBits?._VC2_LOCK;
@@ -1088,6 +1194,8 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
         public object WDUTemperature { get; set; }
         public object MCUTemperature { get; set; }
         public string OperationMode { get; set; }
+        public string EPSControllerStatus { get; set; }
+        public SubsystemInterfaceStatusBitsData SubsystemInterfaceStatusBits { get; set; }
         public StatusBitsData StatusBits { get; set; }
         public JamsatStatusBitsData JamsatStatusBits { get; set; }
         public JamsatTelemetryData JamsatTelemetry { get; set; }
@@ -1113,6 +1221,22 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
         public string _5V_COM { get; set; }
         public string _12V_ADCS { get; set; }
         public string _12V_LIU { get; set; }
+    }
+
+    public class SubsystemInterfaceStatusBitsData
+    {
+        public string SystemCheck { get; set; }
+        public string _I2C_RTC { get; set; }
+        public string _I2C_MEM { get; set; }
+        public string _I2C_EPSC { get; set; }
+        public string _I2C_COM { get; set; }
+        public string _I2C_ANT { get; set; }
+        public string _I2C_IFPV { get; set; }
+        public string _I2C_ADCS { get; set; }
+        public string _I2C_CAM { get; set; }
+        public string _I2C__MATLIU { get; set; }
+        public string _I2C_NU { get; set; }
+        public string _UART_JAMSAT { get; set; }
     }
 
     public class JamsatStatusBitsData

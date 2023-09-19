@@ -4,7 +4,7 @@
         xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
 
         x:Class="TENKOH2_BEACON_DECODER_Multi_Platform.MainWindow"
-        Width="920"
+        Width="1070"
         Height="770"
         CanResize="True"
         Title="TENKOH2_BEACON_DECODER_v1"
@@ -441,13 +441,13 @@
 
                     <TabItem Header="JAM">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                            <StackPanel Orientation="Vertical" Width="460" HorizontalAlignment="Left">
+                            <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
                                 <controls:Card
                                     x:Name="Card3" 
                                     Width="440" 
-                                    Height="130" 
+                                    Height="150" 
                                     HorizontalAlignment="Left"
-                                    Margin="10">
+                                    Margin="10,10,10,0">
 
                                     <StackPanel>
                                         <TextBlock Text="Telemetry" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
@@ -456,6 +456,12 @@
                                             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                                 <TextBlock Text="Opreation Mode: " Width="150"/>
                                                 <TextBlock x:Name="txtOperationModeJ" FontStyle="Italic" Width="200"/>
+                                            </StackPanel>
+
+                                            <!-- EPS Controller Opreation Mode   -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                                <TextBlock Text="EPS Controller Status: " Width="150"/>
+                                                <TextBlock x:Name="txtEPSControllerStatusJ" FontStyle="Italic" Width="200"/>
                                             </StackPanel>
 
                                         <Grid>
@@ -476,7 +482,7 @@
                                                 </StackPanel>
                                                 <!-- Battery Status -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
-                                                    <TextBlock Text="Charge/Discharge" Width="130"/>
+                                                    <TextBlock Text="Charge/Discharge: " Width="130"/>
                                                     <TextBlock x:Name="txtBatteryStatusJ" FontStyle="Italic" Width="90" />
                                                 </StackPanel>
                                                 <!-- Battery Voltage -->
@@ -525,7 +531,7 @@
                                     Width="440" 
                                     Height="180" 
                                     HorizontalAlignment="Left" 
-                                    Margin="10">
+                                    Margin="10,10,10,0">
 
                                     <StackPanel>
                                         <TextBlock Text="Satellite Status" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
@@ -633,21 +639,156 @@
                                         </Grid>
                                     </StackPanel>
                                 </controls:Card>
+
+                                <controls:Card
+                                x:Name="Card8" 
+                                Width="440" 
+                                Height="205" 
+                                HorizontalAlignment="Left" 
+                                Margin="10">
+
+                                <StackPanel>
+                                    <TextBlock Text="Subsystem Interface Status" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+
+                                    <!-- System Check -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                        <TextBlock Text="System Check: " Width="120"/>
+                                        <TextBlock x:Name="txtSystemCheckJ" FontStyle="Italic" Width="220"/>
+                                        <TextBlock Width="30"/>
+                                    </StackPanel>
+
+                                    <Grid>    
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- First Column -->
+                                        <StackPanel Orientation="Vertical" Grid.Column="0" Margin="0,0,15,0">
+
+                                            <!-- I2C_RTC -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="I2C_RTC:" Width="110"/>
+                                                <Ellipse x:Name="statusIndicatorI2CRTCJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="60" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtI2CRTCJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            
+                                            <!-- I2C_MEM -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="I2C_MEM:" Width="110"/>
+                                                <Ellipse x:Name="statusIndicatorI2CMEMJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="60" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtI2CMEMJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+
+                                            <!-- I2C_EPSC -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="I2C_EPSC:" Width="110"/>
+                                                <Ellipse x:Name="statusIndicatorI2CEPSCJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="60" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtI2CEPSCJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+
+                                            <!-- I2C_COM -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="I2C_COM:" Width="110"/>
+                                                <Ellipse x:Name="statusIndicatorI2CCOMJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="60" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtI2CCOMJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+
+                                            <!-- I2C_ANT -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="I2C_ANT:" Width="110"/>
+                                                <Ellipse x:Name="statusIndicatorI2CANTJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="60" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtI2CANTJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+
+                                            <!-- I2C_IFPV -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="I2C_IFPV:" Width="110"/>
+                                                <Ellipse x:Name="statusIndicatorI2CIFPVJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="60" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtI2CIFPVJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+
+                                        </StackPanel>
+
+                                        <!-- Second Column -->
+                                        <StackPanel Orientation="Vertical" Grid.Column="1">
+
+                                            <!-- I2C_ADCS -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="I2C_ADCS:" Width="110"/>
+                                                <Ellipse x:Name="statusIndicatorI2CADCSJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="60" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtI2CADCSJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            
+                                            <!-- I2C_CAM -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="I2C_CAM:" Width="110"/>
+                                                <Ellipse x:Name="statusIndicatorI2CCAMJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="60" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtI2CCAMJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            
+                                            <!-- I2C_MATLIU -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="I2C_MATLIU:" Width="110"/>
+                                                <Ellipse x:Name="statusIndicatorI2CMATLIUJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="60" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtI2CMATLIUJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+                                            
+                                            <!-- I2C_NU -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="I2C_NU:" Width="110"/>
+                                                <Ellipse x:Name="statusIndicatorI2CNUJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="60" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtI2CNUJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+
+                                            <!-- UART_JAMSAT -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
+                                                <TextBlock Text="UART_JAMSAT:" Width="110"/>
+                                                <Ellipse x:Name="statusIndicatorUARTJAMSATJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                                <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="60" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="txtUARTJAMSATJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </controls:Card>
+
                             </StackPanel>
 
-                            <StackPanel Orientation="Vertical" Width="460" HorizontalAlignment="Left">
+                            <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
                                 <controls:Card
                                     x:Name="Card5"
-                                    Width="440" 
-                                    Height="130" 
+                                    Width="220" 
+                                    Height="180" 
                                     HorizontalAlignment="Left" 
-                                    Margin="10">
+                                    Margin="10,10,10,0">
 
                                     <StackPanel>
                                         <TextBlock Text="JAMSAT Teremetry" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
                                         <Grid>    
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
 
@@ -676,10 +817,7 @@
                                                     </Border>
                                                     <TextBlock Text=" V" Width="60"/>
                                                 </StackPanel>
-                                            </StackPanel>
-                                            
-                                            <!-- Second Column -->
-                                            <StackPanel Orientation="Vertical" Grid.Column="1">
+
                                                 <!-- RF Input UHF-Band -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                                     <TextBlock Text="RfInput(VHF): " Width="110"/>
@@ -711,8 +849,8 @@
 
                                 <controls:Card
                                     x:Name="Card6"
-                                    Width="440" 
-                                    Height="180" 
+                                    Width="220" 
+                                    Height="230" 
                                     HorizontalAlignment="Left" 
                                     Margin="10">
 
@@ -721,7 +859,6 @@
 
                                         <Grid>    
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
 
@@ -759,39 +896,36 @@
                                                         <TextBlock x:Name="txt58GLOCK" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                     </Border>
                                                 </StackPanel>
-                                            </StackPanel>
 
-                                            <!-- Second Column -->
-                                            <StackPanel Orientation="Vertical" Grid.Column="1">
                                                 <!-- VC2_ON -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
-                                                    <TextBlock Text="VC2ON:" Width="70"/>
+                                                    <TextBlock Text="VC2ON:" Width="100"/>
                                                     <Ellipse x:Name="statusIndicatorVC2ON" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                                    <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="100" VerticalAlignment="Center">
+                                                    <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="70" VerticalAlignment="Center">
                                                         <TextBlock x:Name="txtVC2ON" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                     </Border>
                                                 </StackPanel>
                                                 <!-- AMPEN -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
-                                                    <TextBlock Text="AMPEN:" Width="70"/>
+                                                    <TextBlock Text="AMPEN:" Width="100"/>
                                                     <Ellipse x:Name="statusIndicatorAMPEN" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                                    <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="100" VerticalAlignment="Center">
+                                                    <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="70" VerticalAlignment="Center">
                                                         <TextBlock x:Name="txtAMPEN" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                     </Border>
                                                 </StackPanel>
                                                 <!-- 58GON -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
-                                                    <TextBlock Text="58GON:" Width="70"/>
+                                                    <TextBlock Text="58GON:" Width="100"/>
                                                     <Ellipse x:Name="statusIndicator58GON" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                                    <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="100" VerticalAlignment="Center">
+                                                    <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="70" VerticalAlignment="Center">
                                                         <TextBlock x:Name="txt58GON" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                     </Border>
                                                 </StackPanel>
                                                 <!-- UHFCWON -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
-                                                    <TextBlock Text="UHFCWON:" Width="70"/>
+                                                    <TextBlock Text="UHFCWON:" Width="100"/>
                                                     <Ellipse x:Name="statusIndicatorUHFCWON" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                                    <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="100" VerticalAlignment="Center">
+                                                    <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="70" VerticalAlignment="Center">
                                                         <TextBlock x:Name="txtUHFCWON" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                     </Border>
                                                 </StackPanel>
@@ -799,6 +933,8 @@
                                         </Grid>
                                     </StackPanel>
                                 </controls:Card>
+
+                                
                             </StackPanel>
                         </StackPanel>
                     </TabItem>
