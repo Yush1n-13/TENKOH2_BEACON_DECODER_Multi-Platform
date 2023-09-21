@@ -17,6 +17,8 @@
         <TrimmerRootDescriptor Include="\TrimmingExclusions.xml" />
     </TrimmerRootDescriptors>
 
+    <AssemblyName>TENKOH2_BEACON_DECODER</AssemblyName>
+
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,16 +29,19 @@
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <!--PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.2" /-->
     <PackageReference Include="Material.Avalonia" Version="3.0.0-avalonia11-preview6.17-nightly" />
+    <PackageReference Include="Material.Icons.Avalonia" Version="2.0.1" />
     <!--PackageReference Include="Newtonsoft.Json" Version="13.0.3" /-->
   </ItemGroup>
 
   <ItemGroup>
     <!--AvaloniaResource Include="SettingsWindow.axaml"/-->
+    <EmbeddedResource Include="AppConfigure.json" />
 
     <AvaloniaResource Include="Images\TK2.png"/>
     <AvaloniaResource Include="Images\TK2_icon.ico"/>
     <AvaloniaResource Include="Images\TEN-KOH2.png"/>
     <AvaloniaResource Include="Images\TK2_Satellite.png"/>
+    <AvaloniaResource Include="Images\Ten-Koh2_black_300.png"/>
   </ItemGroup>
 
 </Project>

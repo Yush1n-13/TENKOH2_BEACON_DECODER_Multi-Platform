@@ -1,7 +1,10 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Text.Json;
 using System.Collections.Generic;
+using Avalonia;
+using Avalonia.Platform;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Interactivity;
@@ -10,6 +13,7 @@ using Avalonia.Input;
 using Avalonia.Threading;
 using System.Timers;
 using System.Text.RegularExpressions;
+
 
 // using Newtonsoft.Json;
 
@@ -20,9 +24,49 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
         public MainWindow()
         {
             InitializeComponent();
+            LoadSettings();
         }
 
-        public string ReferencedFilePath { get; set; }
+        private void LoadSettings()
+        {
+            var configFilePath = "UserSettings.json";
+
+            if (File.Exists(configFilePath))
+            {
+                var json = File.ReadAllText(configFilePath);
+                var config = JsonSerializer.Deserialize<AppConfig>(json);
+
+                _targetString = config.targetString;
+                _ReferencedFilePath = config.ReferencedFilePath;
+                _extractedDataLength = config.extractedDataLength;
+            }
+            else
+            {
+                LoadDefaultSettings();
+            }
+        }
+
+        private void LoadDefaultSettings()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = "TENKOH2_BEACON_DECODER_Multi-Platform.AppConfigure.json";
+
+            using Stream stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null)
+            {
+                Console.WriteLine($"Resource {resourceName} not found.");
+                return;
+            }
+            using StreamReader reader = new StreamReader(stream);
+            var json = reader.ReadToEnd();
+
+            var config = JsonSerializer.Deserialize<AppConfig>(json);
+
+            _targetString = config.targetString;
+            _ReferencedFilePath = config.ReferencedFilePath;
+            _extractedDataLength = config.extractedDataLength;
+            // Handle saveLogData if required
+        }
 
         private void NUDecodeButton_Click(object sender, RoutedEventArgs e)
         {
@@ -756,6 +800,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
                 LogData logData = new LogData
                 {
+                    Callsign = "JS1YKI",
                     Input = input,
                     TimeStamp = timestamp,
                     GPIOExpander = dec1,
@@ -1005,7 +1050,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 string logFilePath = System.IO.Path.Combine(logsDirectory, $"Log_{currentDate}.json");
 
                 // 4. Serialize the data to JSON format
-                string jsonData = System.Text.Json.JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+                string jsonData = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
 
                 // 5. Save the JSON data to a file
                 File.WriteAllText(logFilePath, jsonData);
@@ -1051,29 +1096,32 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             if (radioButton == ManualInputRadio)
             {
                 Console.WriteLine("ManualInputRadio selected");
-                InputTextBox.IsReadOnly = false;
+                InputTextBox.IsEnabled = true;
                 InputTextBox.Text = "";
                 ResetUI();
             }
             else if (radioButton == AutomaticInputRadio)
             {
                 Console.WriteLine("AutomaticInputRadio selected");
-                InputTextBox.IsReadOnly = true;
+                InputTextBox.IsEnabled = false;
                 InputTextBox.Text = "";
                 ResetUI();
 
-                var settingsWindow = new SettingsWindow();
-                settingsWindow.ShowDialog(this);
+                if (!File.Exists("UserSettings.json"))
+                {
+                    SettingsButton_Click(null,null);
+                }
 
                 StartPolling();
             }
         }
 
-        private void RadioButton_Unchecked(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine($"{(sender as RadioButton).Name} is unchecked.");
-        }
+        // private void RadioButton_Unchecked(object sender, RoutedEventArgs e)
+        // {
+        //     Console.WriteLine($"{(sender as RadioButton).Name} is unchecked.");
+        // }
 
+        // AutomaticInputRadio selected Section
         enum DataState
         {
             Initial,
@@ -1082,10 +1130,15 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
         }
         
         private DataState _currentState = DataState.Initial;
+        private int _extractedDataLength;
+        private string _targetString;
+        private string _ReferencedFilePath;
+        private Timer _timer;
+        private DateTime _lastProcessedTime;
 
         private void StartPolling()
         {
-            Timer _timer;
+            Console.WriteLine("StartPolling");
             _timer = new Timer(2000); // 2 seconds
             _timer.Elapsed += PollFile;
             _timer.AutoReset = true;
@@ -1094,24 +1147,51 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
         private void PollFile(object sender, ElapsedEventArgs e)
         {
-            
-            if (string.IsNullOrWhiteSpace(ReferencedFilePath))
+            LoadSettings();
+            Console.WriteLine($"PollFile called at {DateTime.Now}");
+            Console.WriteLine(_targetString + _extractedDataLength + "\n" + _ReferencedFilePath);
+
+            if (string.IsNullOrWhiteSpace(_ReferencedFilePath))
             {
                 return; 
             }
             
-            string TargetFilePath = ReferencedFilePath;
+            string TargetFilePath = _ReferencedFilePath;
+
+            if (!System.IO.File.Exists(TargetFilePath))
+            {
+                Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    OutputTextBox.Text = $"File does not exist:\n{TargetFilePath}\n" + OutputTextBox.Text;
+                });
+                Timer_Elapsed(null,null);
+                return;
+            }
+
+            if (!System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(TargetFilePath)))
+            {
+                Console.WriteLine($"Directory does not exist: {System.IO.Path.GetDirectoryName(TargetFilePath)}");
+                Timer_Elapsed(null,null);
+                return;
+            }
+
             var content = ReadFileContentWithRetry(TargetFilePath);
-            int lastIndex = content.LastIndexOf("JS1YKI:");
+            int lastIndex = content.LastIndexOf(_targetString + ":");
+            int targetStringlength = _targetString.Length;
+
+            int consecutiveDataFoundCount = 0;
+            const int MaxWaitingTime = 10;
 
             // If "JS1YKI:" is found and there's enough content after it
-            if (lastIndex != -1 && content.Length >= lastIndex + 28) // +7 for "JS1YKI:" and +22 for data
+            if (lastIndex != -1 && content.Length >= lastIndex + targetStringlength + 1 + _extractedDataLength)
             {
-                string extractedData = content.Substring(lastIndex + 7, 21);
+                string extractedData = content.Substring(lastIndex + targetStringlength + 1, _extractedDataLength);
+                Console.WriteLine(extractedData);
 
                 switch (_currentState)
                 {
                     case DataState.Initial:
+                        _lastProcessedTime = DateTime.Now;
                         Dispatcher.UIThread.InvokeAsync(() => 
                         {
                             InputTextBox.Text = "";
@@ -1128,13 +1208,19 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                         break;
 
                     case DataState.DataFound:                       
-                        if (content.Substring(lastIndex + 7, 21) != extractedData)
+                        if (content.Substring(lastIndex + targetStringlength + 1, _extractedDataLength) != extractedData)
                         {
                             _currentState = DataState.Initial;
                             return;
                         }
                         break;
                 }
+                // This should come right after your switch statement
+                if (DateTime.Now - _lastProcessedTime > TimeSpan.FromMinutes(2))
+                {
+                    Timer_Elapsed(null, null);
+                }
+
             }
             else
             {
@@ -1148,11 +1234,20 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             {
                 try
                 {
+                                
                     using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     using (var streamReader = new StreamReader(fileStream))
                     {
                         return streamReader.ReadToEnd();
                     }
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    Console.WriteLine($"Directory not found: {path}");
+                }
+                catch (FileNotFoundException)
+                {
+                    Console.WriteLine($"File not found: {path}");
                 }
                 catch (IOException ex)
                 {
@@ -1169,16 +1264,46 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             return null;
         }
 
-        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            var settingsWindow = new SettingsWindow();
-            settingsWindow.ShowDialog(this);
+            Dispatcher.UIThread.InvokeAsync(() => {
+                ManualInputRadio.IsChecked = true;
+                //RadioButton_Checked(ManualInputRadio, null);
+            });
+
+            _timer.Stop();
+            _timer.Dispose();
+            Console.WriteLine("Session Timed Out: \nReverting to Manual Input Mode.");
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                OutputTextBox.Text = "Session Timed Out: \nReverting to Manual Input Mode.\n" + OutputTextBox.Text;
+            });
         }
 
-        public void UpdateReferencedFilePath(string path)
-        {
-            ReferencedFilePath = path;
+        // SettingWindow Function
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {   
+            if (_timer != null)
+            {
+                _timer.Stop();
+                _timer.Elapsed -= PollFile;
+                _timer.Dispose();
+                _timer = null;
+            }
+
+            var settingsWindow = new SettingsWindow();
+
+            settingsWindow.Closed += (s, args) => 
+            {
+                if (AutomaticInputRadio.IsChecked == true)
+                {
+                    StartPolling();
+                }
+            };
+            settingsWindow.ShowDialog(this);
+
         }
+
     }
 
     public class LogData
@@ -1251,4 +1376,11 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
         public string _UHFCW_ON { get; set; }
     }
 
+    public class AppConfig
+    {
+        public string targetString { get; set; }
+        public string ReferencedFilePath { get; set; }
+        public string ReferencedFolderPath { get; set;}
+        public int extractedDataLength { get; set; }
+    }
 }

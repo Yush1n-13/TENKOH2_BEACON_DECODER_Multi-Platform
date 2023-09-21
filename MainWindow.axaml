@@ -2,15 +2,24 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:p1="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
         xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+        xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        
 
         x:Class="TENKOH2_BEACON_DECODER_Multi_Platform.MainWindow"
         Width="1070"
-        Height="770"
+        Height="795"
         CanResize="True"
-        Title="TENKOH2_BEACON_DECODER_v1"
+        Title="TENKOH2_BEACON_DECODER DEMO"
         Icon="Images\TK2_icon.ico">
 
     <StackPanel Orientation="Vertical">
+
+        <controls:ColorZone Height="30" Mode="PrimaryMid">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="  TEN-KOH2 BEACON DECODER " VerticalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+            </StackPanel>
+        </controls:ColorZone>
+
         <!-- Column 1: Existing GUI -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >  
             <StackPanel Orientation="Vertical">
@@ -22,7 +31,7 @@
                     UseFloatingWatermark="True" 
                     p1:TextFieldAssist.Label="Insert Beacon String"
                     Width="330" 
-                    Margin="10"
+                    Margin="10,5,10,10"
                     FontSize="16"/>
 
                 <controls:Card
@@ -38,6 +47,7 @@
                     </StackPanel>
                 </controls:Card>
             </StackPanel>
+
             <StackPanel Orientation="Vertical">
                 <Button 
                     x:Name="NUDecodeButton" 
@@ -59,6 +69,40 @@
                     FontSize="22"
                     HorizontalAlignment="Center"/>
             </StackPanel>
+
+            <controls:Card
+                x:Name="InputControllCard"
+                Margin="10"
+                Padding="0"
+                Width="160">
+                <StackPanel Orientation="Vertical">
+
+                    <controls:ColorZone Height="30" Mode="PrimaryMid">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text=" Input Mode" VerticalAlignment="Center" FontSize="16" FontWeight="Bold"/>
+                            <ToggleButton Content="{icons:MaterialIconExt Cog}" Margin="20,0,0,0" Click="SettingsButton_Click" />
+                        </StackPanel>
+                    </controls:ColorZone>
+
+                    <RadioButton 
+                        x:Name="ManualInputRadio" 
+                        Content="Manual Input" 
+                        FontSize="14" 
+                        IsChecked="True" 
+                        GroupName="InputMode"
+                        Checked="RadioButton_Checked"
+                        Margin="5,10,5,0"/>
+
+                    <RadioButton 
+                        x:Name="AutomaticInputRadio" 
+                        Content="Automatic Input"
+                        FontSize="14" 
+                        GroupName="InputMode"
+                        Checked="RadioButton_Checked"
+                        Margin="5"/>
+                </StackPanel>
+            </controls:Card>
+
             <Image 
                 HorizontalAlignment="Left"  
                 Source="Images\TK2.png" 
@@ -70,39 +114,12 @@
                 Height="110"
                 Margin="10"/-->
 
-            <controls:Card
-                x:Name="InputControllCard"
-                Margin="10">
-                <StackPanel Orientation="Vertical">
-                    <RadioButton 
-                        x:Name="ManualInputRadio" 
-                        Content="Manual Input" 
-                        IsChecked="True" 
-                        GroupName="InputMode"
-                        Checked="RadioButton_Checked" 
-                        Unchecked="RadioButton_Unchecked" />
-
-                    <RadioButton 
-                        x:Name="AutomaticInputRadio" 
-                        Content="Automatic Input"
-                        GroupName="InputMode"
-                        Checked="RadioButton_Checked" 
-                        Unchecked="RadioButton_Unchecked" />
-                    <Button 
-                        Content="Config" 
-                        Width="100" 
-                        Margin="10" 
-                        Click="SettingsButton_Click" 
-                        HorizontalAlignment="Left" />
-                </StackPanel>
-            </controls:Card>
-
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
             <TabControl x:Name="MainTabControl"  HorizontalAlignment="Left">
                 <TabControl.Items>
-                    <TabItem Header="NUM">
+                    <TabItem Header="Nominal Mode">
                         <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
                             <controls:Card
                                 x:Name="Card1" 
@@ -439,7 +456,7 @@
                         </StackPanel>
                     </TabItem>
 
-                    <TabItem Header="JAM">
+                    <TabItem Header="JAMSAT Mission Mode">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                             <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
                                 <controls:Card
@@ -796,23 +813,23 @@
                                             <StackPanel Orientation="Vertical" Grid.Column="0">
                                                 <!-- Mode_Timer -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
-                                                    <TextBlock Text="Mode Timer: " Width="120"/>
-                                                    <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock Text="Mode Timer: " Width="110"/>
+                                                    <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="50" VerticalAlignment="Center">
                                                         <TextBlock x:Name="txtModeTimer" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                     </Border>
                                                     <TextBlock Text=" Min" Width="60"/>
                                                 </StackPanel>
                                                 <!-- Opration Mode -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
-                                                    <TextBlock Text="Opration Mode: " Width="120"/>
-                                                    <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock Text="Opration Mode: " Width="110"/>
+                                                    <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="50" VerticalAlignment="Center">
                                                         <TextBlock x:Name="txtModeTimerOP" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                     </Border>
                                                 </StackPanel>
                                                 <!-- SDC Voltage -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
-                                                    <TextBlock Text="ADC_Voltage: " Width="120"/>
-                                                    <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="40" VerticalAlignment="Center">
+                                                    <TextBlock Text="ADC_Voltage: " Width="110"/>
+                                                    <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="50" VerticalAlignment="Center">
                                                         <TextBlock x:Name="txtADCVoltage" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                     </Border>
                                                     <TextBlock Text=" V" Width="60"/>
@@ -820,7 +837,7 @@
 
                                                 <!-- RF Input UHF-Band -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                                    <TextBlock Text="RfInput(VHF): " Width="110"/>
+                                                    <TextBlock Text="RFInput(VHF): " Width="110"/>
                                                     <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="50" VerticalAlignment="Center">
                                                         <TextBlock x:Name="txtRFInput" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                     </Border>
@@ -828,7 +845,7 @@
                                                 </StackPanel>
                                                 <!-- RF Output VHF-Band  -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                                    <TextBlock Text="RfOutput(UHF): " Width="110"/>
+                                                    <TextBlock Text="RFOutput(UHF): " Width="110"/>
                                                     <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="50" VerticalAlignment="Center">
                                                         <TextBlock x:Name="txtRFOutputUHF" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                     </Border>
@@ -836,7 +853,7 @@
                                                 </StackPanel>
                                                 <!-- RF Output 58G -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                                    <TextBlock Text="RfOutput(58G): " Width="110"/>
+                                                    <TextBlock Text="RFOutput(58G): " Width="110"/>
                                                     <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="50" VerticalAlignment="Center">
                                                         <TextBlock x:Name="txtRFOutput58G" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                     </Border>

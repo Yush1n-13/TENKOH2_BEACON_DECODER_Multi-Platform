@@ -5,12 +5,115 @@
     xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
 
     x:Class="TENKOH2_BEACON_DECODER_Multi_Platform.SettingsWindow"
-    Title="config" Width="500" Height="300">
+    Title="TENKOH2_BEACON_DECODER Configuration" 
+    Icon="Images\TK2_icon.ico"
+    CanResize="False"
+    Width="430" 
+    Height="500">
 
-    <StackPanel Orientation="Horizontal">
-        <TextBox x:Name="PathTextBox" Width="260" p1:TextFieldAssist.Label="Insert Target File Path"/>
-        <Button Content="Browse" Width="100" Margin="5" Click="BrowseButton_Click" HorizontalAlignment="Right"/>
-        <Button Content="Save" Width="100" Margin="5" Click="ApplyButton_Click" HorizontalAlignment="Right"/>
+    <StackPanel Orientation="Vertical" Width="430" >
+
+        <controls:ColorZone Height="30" Mode="PrimaryMid">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text=" Automatic Input Mode Configure " VerticalAlignment="Center" FontSize="16" FontWeight="Bold"/>
+            </StackPanel>
+        </controls:ColorZone>
+        
+        <controls:Card 
+            x:Name = "targetString"
+            Margin="10,10,10,0">
+
+            <StackPanel>
+                <DockPanel>
+                    <TextBlock Text="*Option" Foreground="Gray" FontSize="12" DockPanel.Dock="Right"/>
+                    <TextBlock Text="Change from JS1YKI if needed" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+                </DockPanel>
+                
+                <TextBox x:Name="PrefixTextBox" 
+                    MaxLength="6" 
+                    Width="140" 
+                    HorizontalAlignment="Left"
+                    UseFloatingWatermark="True"
+                    p1:TextFieldAssist.Label="Target String" />
+            </StackPanel>
+
+
+        </controls:Card>
+
+        <controls:Card 
+            x:Name = "extractedDataLength"
+            Margin="10,10,10,0">
+            <StackPanel Orientation="Vertical">
+                <DockPanel>
+                    <TextBlock Text="*Required" Foreground="Gray" FontSize="12" DockPanel.Dock="Right"/>
+                    <TextBlock Text="Select CWBeacon Mode" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+                </DockPanel>
+                
+                <RadioButton x:Name="NominalModeRadioButton" 
+                    IsChecked="True" 
+                    Checked="NominalModeRadioButton_Checked">Nominal Mode</RadioButton>
+                <RadioButton x:Name="JAMSATModeRadioButton" 
+                    Checked="JAMSATModeRadioButton_Checked">JAMSAT Mode</RadioButton>
+            </StackPanel>
+        </controls:Card>
+        
+        <controls:Card 
+            x:Name = "Path"
+            Margin="10">
+            <StackPanel Orientation="Vertical">
+                <DockPanel>
+                    <TextBlock Text="*Required" Foreground="Gray" FontSize="12" DockPanel.Dock="Right"/>
+                    <TextBlock Text="Select Source Path" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+                </DockPanel>
+
+                <StackPanel Orientation="Vertical">
+
+                    <RadioButton x:Name="FolderRadioButton" 
+                        IsChecked="True" 
+                        Content="Folder" 
+                        Checked="FolderRadioButton_Checked"/>
+                    <RadioButton x:Name="FileRadioButton" 
+                        Content="File" 
+                        Checked="FileRadioButton_Checked"/>
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Spacing="10">
+
+                    <TextBox x:Name="FolderPathTextBox" 
+                        Width="300" 
+                        p1:TextFieldAssist.Label="Please select a folder." />
+                    <Button x:Name="BrowseFolderButton" 
+                        Content="Browse" 
+                        Width="80"
+                        Height="30"
+                        FontSize="14"
+                        Click="BrowseFolderButton_Click" />
+
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal" Spacing="10">
+
+                    <TextBox x:Name="FilePathTextBox" 
+                        Width="300" 
+                        p1:TextFieldAssist.Label="Please choose a file." />
+                    <Button x:Name="BrowseFileButton" 
+                        Content="Browse" 
+                        Width="80"
+                        Height="30"
+                        FontSize="14"
+                        Click="BrowseFileButton_Click" />
+
+                </StackPanel>
+
+            </StackPanel>
+        </controls:Card>
+
+        <StackPanel Orientation="Horizontal" Width="430" HorizontalAlignment="Right">
+            <Button Content="Restore" Width="80" Margin="5" Click="RestoreButton_Click"/>
+            <Button Content="Cancel" Width="80" Margin="165,5,5,5" Click="CancelButton_Click"/>
+            <Button Content="Apply" Width="80" Margin="5" Click="ApplyButton_Click"/>
+        </StackPanel>
     </StackPanel>
 
 </Window>
