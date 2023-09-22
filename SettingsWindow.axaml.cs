@@ -8,6 +8,7 @@ using Avalonia.Threading;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Controls.ApplicationLifetimes;
+using Newtonsoft.Json;
 
 
 namespace TENKOH2_BEACON_DECODER_Multi_Platform
@@ -40,11 +41,10 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 ReferencedFilePath = _TargetPath,
                 ReferencedFolderPath = _TargetFolderPath,
                 extractedDataLength = _selectedDataLength,
-                saveLogData = true,  // Assuming SaveLogData is always true for now
 
             };
 
-            var json = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
+            var json = System.Text.Json.JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText("UserSettings.json", json);
             Console.WriteLine(json);
             
@@ -156,7 +156,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             else
             {
                 var assembly = Assembly.GetExecutingAssembly();
-                var resourceName = "TENKOH2_BEACON_DECODER_Multi-Platform.AppConfigure.json";
+                var resourceName = "TENKOH2_BEACON_DECODER_Multi_Platform.AppConfigure.json";
 
                 using Stream stream = assembly.GetManifestResourceStream(resourceName);
                 if (stream == null)
@@ -168,8 +168,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 jsonString = reader.ReadToEnd();
             }
 
-            var config = JsonSerializer.Deserialize<AppConfig>(jsonString);
-            Console.WriteLine(jsonString);
+            var config = Newtonsoft.Json.JsonConvert.DeserializeObject<AppConfig>(jsonString);
             
             PrefixTextBox.Text = config.targetString;
             FilePathTextBox.Text = config.ReferencedFilePath;

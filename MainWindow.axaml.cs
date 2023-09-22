@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Platform;
@@ -15,7 +16,7 @@ using System.Timers;
 using System.Text.RegularExpressions;
 
 
-// using Newtonsoft.Json;
+using Newtonsoft.Json;
 
 namespace TENKOH2_BEACON_DECODER_Multi_Platform
 {
@@ -29,27 +30,38 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
         private void LoadSettings()
         {
-            var configFilePath = "UserSettings.json";
-
-            if (File.Exists(configFilePath))
+            try
             {
-                var json = File.ReadAllText(configFilePath);
-                var config = JsonSerializer.Deserialize<AppConfig>(json);
+                var configFilePath = "UserSettings.json";
 
-                _targetString = config.targetString;
-                _ReferencedFilePath = config.ReferencedFilePath;
-                _extractedDataLength = config.extractedDataLength;
+                var testJson = @"{ ""TestProperty"": ""TestValue"" }";
+                var testObject = Newtonsoft.Json.JsonConvert.DeserializeObject<TestClass>(testJson);
+                Console.WriteLine(testObject.TestProperty);
+
+                if (File.Exists(configFilePath))
+                {
+                    var json = File.ReadAllText(configFilePath);
+                    var config = Newtonsoft.Json.JsonConvert.DeserializeObject<AppConfig>(json);
+
+                    _targetString = config.targetString;
+                    _ReferencedFilePath = config.ReferencedFilePath;
+                    _extractedDataLength = config.extractedDataLength;
+                }
+                else
+                {
+                    LoadDefaultSettings();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                LoadDefaultSettings();
+                Console.WriteLine($"Error loading settings: {ex}");
             }
         }
 
         private void LoadDefaultSettings()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = "TENKOH2_BEACON_DECODER_Multi-Platform.AppConfigure.json";
+            var resourceName = "TENKOH2_BEACON_DECODER_Multi_Platform.AppConfigure.json";
 
             using Stream stream = assembly.GetManifestResourceStream(resourceName);
             if (stream == null)
@@ -60,7 +72,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             using StreamReader reader = new StreamReader(stream);
             var json = reader.ReadToEnd();
 
-            var config = JsonSerializer.Deserialize<AppConfig>(json);
+            var config = Newtonsoft.Json.JsonConvert.DeserializeObject<AppConfig>(json);
 
             _targetString = config.targetString;
             _ReferencedFilePath = config.ReferencedFilePath;
@@ -1050,7 +1062,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 string logFilePath = System.IO.Path.Combine(logsDirectory, $"Log_{currentDate}.json");
 
                 // 4. Serialize the data to JSON format
-                string jsonData = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+                string jsonData = System.Text.Json.JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
 
                 // 5. Save the JSON data to a file
                 File.WriteAllText(logFilePath, jsonData);
@@ -1099,6 +1111,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 InputTextBox.IsEnabled = true;
                 InputTextBox.Text = "";
                 ResetUI();
+                _timer.Stop();
             }
             else if (radioButton == AutomaticInputRadio)
             {
@@ -1178,9 +1191,6 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             var content = ReadFileContentWithRetry(TargetFilePath);
             int lastIndex = content.LastIndexOf(_targetString + ":");
             int targetStringlength = _targetString.Length;
-
-            int consecutiveDataFoundCount = 0;
-            const int MaxWaitingTime = 10;
 
             // If "JS1YKI:" is found and there's enough content after it
             if (lastIndex != -1 && content.Length >= lastIndex + targetStringlength + 1 + _extractedDataLength)
@@ -1308,6 +1318,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
     public class LogData
     {
+        public LogData() { }
         public string Callsign { get; set; } = "JS1YKI";
         public string Input { get; set; }
         public string TimeStamp { get; set; }
@@ -1328,6 +1339,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
     public class JamsatTelemetryData
     {
+        public JamsatTelemetryData() { }
         public float ADCVoltage { get; set; }
         public float RFInput { get; set; }
         public object RFOutputUHF { get; set; }
@@ -1336,6 +1348,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
     public class StatusBitsData
     {
+        public StatusBitsData() { }
         public string _5V_CAM { get; set; }
         public string _5V_PL { get; set; }
         public string _5V_NUM { get; set; }
@@ -1350,6 +1363,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
     public class SubsystemInterfaceStatusBitsData
     {
+        public SubsystemInterfaceStatusBitsData() { }
         public string SystemCheck { get; set; }
         public string _I2C_RTC { get; set; }
         public string _I2C_MEM { get; set; }
@@ -1366,6 +1380,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
     public class JamsatStatusBitsData
     {
+        public JamsatStatusBitsData() { }
         public string _VC1_LOCK { get; set; }
         public string _VC2_LOCK { get; set; }
         public string _7021_LOCK { get; set; }
@@ -1377,10 +1392,23 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
     }
 
     public class AppConfig
-    {
+    {    
+        [Newtonsoft.Json.JsonConstructor]
+        public AppConfig(){}
         public string targetString { get; set; }
         public string ReferencedFilePath { get; set; }
         public string ReferencedFolderPath { get; set;}
         public int extractedDataLength { get; set; }
     }
+
+    public class TestClass
+    {
+        [Newtonsoft.Json.JsonConstructor]
+        public TestClass()
+        {
+            Console.WriteLine("TestClass constructor called!");
+        }
+        public string TestProperty { get; set; }
+    }
+
 }

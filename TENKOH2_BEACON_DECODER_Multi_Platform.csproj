@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -12,13 +12,7 @@
 
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>link</TrimMode>
-
-    <TrimmerRootDescriptors>
-        <TrimmerRootDescriptor Include="\TrimmingExclusions.xml" />
-    </TrimmerRootDescriptors>
-
-    <AssemblyName>TENKOH2_BEACON_DECODER</AssemblyName>
-
+    
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,12 +24,13 @@
     <!--PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.2" /-->
     <PackageReference Include="Material.Avalonia" Version="3.0.0-avalonia11-preview6.17-nightly" />
     <PackageReference Include="Material.Icons.Avalonia" Version="2.0.1" />
-    <!--PackageReference Include="Newtonsoft.Json" Version="13.0.3" /-->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <!--AvaloniaResource Include="SettingsWindow.axaml"/-->
+
     <EmbeddedResource Include="AppConfigure.json" />
+    <TrimmerRootDescriptor Include="TrimmingExclusions.xaml" />
 
     <AvaloniaResource Include="Images\TK2.png"/>
     <AvaloniaResource Include="Images\TK2_icon.ico"/>
