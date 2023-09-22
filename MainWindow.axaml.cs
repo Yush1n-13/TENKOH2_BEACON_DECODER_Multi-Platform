@@ -1,8 +1,6 @@
 using System;
 using System.IO;
 using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Platform;
@@ -35,7 +33,8 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 if (File.Exists(configFilePath))
                 {
                     var json = File.ReadAllText(configFilePath);
-                    var config = Newtonsoft.Json.JsonConvert.DeserializeObject<AppConfig>(json);
+                    var config = JsonConvert.DeserializeObject<AppConfig>(json);
+                    Console.WriteLine(json);
 
                     _targetString = config.targetString;
                     _ReferencedFilePath = config.ReferencedFilePath;
@@ -66,7 +65,8 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             using StreamReader reader = new StreamReader(stream);
             var json = reader.ReadToEnd();
 
-            var config = Newtonsoft.Json.JsonConvert.DeserializeObject<AppConfig>(json);
+            var config = JsonConvert.DeserializeObject<AppConfig>(json);
+            Console.WriteLine(json);
 
             _targetString = config.targetString;
             _ReferencedFilePath = config.ReferencedFilePath;
@@ -1056,7 +1056,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 string logFilePath = System.IO.Path.Combine(logsDirectory, $"Log_{currentDate}.json");
 
                 // 4. Serialize the data to JSON format
-                string jsonData = System.Text.Json.JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+                string jsonData = JsonConvert.SerializeObject(data, Formatting.Indented, JsonSettings.JsonSerializerSettings);
 
                 // 5. Save the JSON data to a file
                 File.WriteAllText(logFilePath, jsonData);
@@ -1118,7 +1118,8 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 {
                     SettingsButton_Click(null,null);
                 }
-
+                
+                LoadSettings();
                 StartPolling();
             }
         }
@@ -1154,12 +1155,12 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
         private void PollFile(object sender, ElapsedEventArgs e)
         {
-            LoadSettings();
             Console.WriteLine($"PollFile called at {DateTime.Now}");
-            Console.WriteLine(_targetString + _extractedDataLength + "\n" + _ReferencedFilePath);
+            // Console.WriteLine(_targetString + _extractedDataLength + "\n" + _ReferencedFilePath);
 
             if (string.IsNullOrWhiteSpace(_ReferencedFilePath))
             {
+                Timer_Elapsed(null,null);
                 return; 
             }
             
@@ -1190,7 +1191,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             if (lastIndex != -1 && content.Length >= lastIndex + targetStringlength + 1 + _extractedDataLength)
             {
                 string extractedData = content.Substring(lastIndex + targetStringlength + 1, _extractedDataLength);
-                Console.WriteLine(extractedData);
+                // Console.WriteLine(extractedData);
 
                 switch (_currentState)
                 {
@@ -1277,7 +1278,8 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
             _timer.Stop();
             _timer.Dispose();
-            Console.WriteLine("Session Timed Out: \nReverting to Manual Input Mode.");
+            Console.WriteLine("StopPolling");
+            Console.WriteLine("Session Timed Out: Reverting to Manual Input Mode.");
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 OutputTextBox.Text = "Session Timed Out: \nReverting to Manual Input Mode.\n" + OutputTextBox.Text;
@@ -1301,6 +1303,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             {
                 if (AutomaticInputRadio.IsChecked == true)
                 {
+                    LoadSettings();
                     StartPolling();
                 }
             };
@@ -1308,8 +1311,18 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
         }
 
+        public static class JsonSettings
+        {
+            public static JsonSerializerSettings JsonSerializerSettings { get; } = new JsonSerializerSettings
+            {
+                ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver
+                {
+                    DefaultMembersSearchFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+                }
+            };
+        }
     }
-
+    
     public class LogData
     {
         public LogData() { }
@@ -1387,7 +1400,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
     public class AppConfig
     {    
-        [Newtonsoft.Json.JsonConstructor]
+        [JsonConstructor]
         public AppConfig(){}
         public string targetString { get; set; }
         public string ReferencedFilePath { get; set; }

@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Reflection;
-using System.Text.Json;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -35,7 +34,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             _TargetPath = FilePathTextBox.Text;
             _TargetFolderPath = FolderPathTextBox.Text;  // Assuming you add this variable for folder path as previously suggested
 
-            var config = new
+            var config = new AppConfig
             {
                 targetString = PrefixTextBox.Text,
                 ReferencedFilePath = _TargetPath,
@@ -44,16 +43,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
             };
 
-            var settings = new Newtonsoft.Json.JsonSerializerSettings
-            {
-                ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver
-                {
-                    DefaultMembersSearchFlags = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
-                }
-            };
-
-            Console.WriteLine(config);
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(config, Newtonsoft.Json.Formatting.Indented, settings);
+            var json = JsonConvert.SerializeObject(config, Formatting.Indented, MainWindow.JsonSettings.JsonSerializerSettings);
             File.WriteAllText("UserSettings.json", json);
             Console.WriteLine(json);
             
@@ -177,7 +167,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 jsonString = reader.ReadToEnd();
             }
 
-            var config = Newtonsoft.Json.JsonConvert.DeserializeObject<AppConfig>(jsonString);
+            var config = JsonConvert.DeserializeObject<AppConfig>(jsonString);
             
             PrefixTextBox.Text = config.targetString;
             FilePathTextBox.Text = config.ReferencedFilePath;
