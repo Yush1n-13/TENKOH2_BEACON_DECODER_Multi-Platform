@@ -45,3 +45,6 @@ Note: If there are no updates for 3 minutes, or if the specified folder doesn't 
 
 - OperationMode feature
 - Information section
+- Implementation of dark mode.
+- Implementation of an error display area (only for path errors and session timeouts).
+- More features to be considered.
