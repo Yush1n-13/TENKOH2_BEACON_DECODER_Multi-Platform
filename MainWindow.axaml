@@ -9,7 +9,7 @@
         Width="1070"
         Height="795"
         CanResize="True"
-        Title="TENKOH2_BEACON_DECODER DEMO"
+        Title="TENKOH2_BEACON_DECODER"
         Icon="Images\TK2_icon.ico">
 
     <StackPanel Orientation="Vertical">

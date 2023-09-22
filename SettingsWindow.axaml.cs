@@ -1,13 +1,13 @@
 using System;
 using System.IO;
 using System.Reflection;
-using System.Text.Json;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Controls.ApplicationLifetimes;
+using Newtonsoft.Json;
 
 
 namespace TENKOH2_BEACON_DECODER_Multi_Platform
@@ -34,17 +34,16 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             _TargetPath = FilePathTextBox.Text;
             _TargetFolderPath = FolderPathTextBox.Text;  // Assuming you add this variable for folder path as previously suggested
 
-            var config = new
+            var config = new AppConfig
             {
                 targetString = PrefixTextBox.Text,
                 ReferencedFilePath = _TargetPath,
                 ReferencedFolderPath = _TargetFolderPath,
                 extractedDataLength = _selectedDataLength,
-                saveLogData = true,  // Assuming SaveLogData is always true for now
 
             };
 
-            var json = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
+            var json = JsonConvert.SerializeObject(config, Formatting.Indented, MainWindow.JsonSettings.JsonSerializerSettings);
             File.WriteAllText("UserSettings.json", json);
             Console.WriteLine(json);
             
@@ -156,7 +155,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             else
             {
                 var assembly = Assembly.GetExecutingAssembly();
-                var resourceName = "TENKOH2_BEACON_DECODER_Multi-Platform.AppConfigure.json";
+                var resourceName = "TENKOH2_BEACON_DECODER_Multi_Platform.AppConfigure.json";
 
                 using Stream stream = assembly.GetManifestResourceStream(resourceName);
                 if (stream == null)
@@ -168,8 +167,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 jsonString = reader.ReadToEnd();
             }
 
-            var config = JsonSerializer.Deserialize<AppConfig>(jsonString);
-            Console.WriteLine(jsonString);
+            var config = JsonConvert.DeserializeObject<AppConfig>(jsonString);
             
             PrefixTextBox.Text = config.targetString;
             FilePathTextBox.Text = config.ReferencedFilePath;

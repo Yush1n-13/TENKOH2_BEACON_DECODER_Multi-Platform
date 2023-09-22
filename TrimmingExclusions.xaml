@@ -1,0 +1,23 @@
+<linker>
+    <assembly fullname="Avalonia.Win32">
+        <type fullname="*" required="true" preserve="all"/>
+    </assembly>
+    <assembly fullname="Material.Styles">
+        <type fullname="*" required="true" preserve="all"/>
+    </assembly>
+    <assembly fullname="System.Reactive">
+        <type fullname="*" required="true" preserve="all"/>
+    </assembly>
+    <assembly fullname="Newtonsoft.Json">
+        <type fullname="*" required="true" preserve="all"/>
+    </assembly>
+    <assembly fullname="TENKOH2_BEACON_DECODER_Multi_Platform">
+        <!--type fullname="*" required="true" preserve="all"/-->
+        <type fullname="TENKOH2_BEACON_DECODER_Multi_Platform.LogData" required="true" preserve="all" />
+        <type fullname="TENKOH2_BEACON_DECODER_Multi_Platform.SubsystemInterfaceStatusBitsData" required="true" preserve="all" />
+        <type fullname="TENKOH2_BEACON_DECODER_Multi_Platform.StatusBitsData" required="true" preserve="all" />
+        <type fullname="TENKOH2_BEACON_DECODER_Multi_Platform.JamsatStatusBitsData" required="true" preserve="all" />
+        <type fullname="TENKOH2_BEACON_DECODER_Multi_Platform.JamsatTelemetryData" required="true" preserve="all" />
+        <type fullname="TENKOH2_BEACON_DECODER_Multi_Platform.AppConfig" required="true" preserve="all" />
+    </assembly>
+</linker>
