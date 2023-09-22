@@ -19,6 +19,5 @@
         <type fullname="TENKOH2_BEACON_DECODER_Multi_Platform.JamsatStatusBitsData" required="true" preserve="all" />
         <type fullname="TENKOH2_BEACON_DECODER_Multi_Platform.JamsatTelemetryData" required="true" preserve="all" />
         <type fullname="TENKOH2_BEACON_DECODER_Multi_Platform.AppConfig" required="true" preserve="all" />
-        <type fullname="TENKOH2_BEACON_DECODER_Multi_Platform.TestClass" required="true" preserve="all" />
     </assembly>
 </linker>

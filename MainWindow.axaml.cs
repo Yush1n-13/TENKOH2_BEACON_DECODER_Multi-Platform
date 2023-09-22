@@ -14,8 +14,6 @@ using Avalonia.Input;
 using Avalonia.Threading;
 using System.Timers;
 using System.Text.RegularExpressions;
-
-
 using Newtonsoft.Json;
 
 namespace TENKOH2_BEACON_DECODER_Multi_Platform
@@ -33,10 +31,6 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             try
             {
                 var configFilePath = "UserSettings.json";
-
-                var testJson = @"{ ""TestProperty"": ""TestValue"" }";
-                var testObject = Newtonsoft.Json.JsonConvert.DeserializeObject<TestClass>(testJson);
-                Console.WriteLine(testObject.TestProperty);
 
                 if (File.Exists(configFilePath))
                 {
@@ -1400,15 +1394,4 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
         public string ReferencedFolderPath { get; set;}
         public int extractedDataLength { get; set; }
     }
-
-    public class TestClass
-    {
-        [Newtonsoft.Json.JsonConstructor]
-        public TestClass()
-        {
-            Console.WriteLine("TestClass constructor called!");
-        }
-        public string TestProperty { get; set; }
-    }
-
 }

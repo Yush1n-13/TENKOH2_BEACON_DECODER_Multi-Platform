@@ -44,7 +44,16 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
             };
 
-            var json = System.Text.Json.JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
+            var settings = new Newtonsoft.Json.JsonSerializerSettings
+            {
+                ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver
+                {
+                    DefaultMembersSearchFlags = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
+                }
+            };
+
+            Console.WriteLine(config);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(config, Newtonsoft.Json.Formatting.Indented, settings);
             File.WriteAllText("UserSettings.json", json);
             Console.WriteLine(json);
             
