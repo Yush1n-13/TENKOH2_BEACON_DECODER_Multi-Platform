@@ -12,6 +12,8 @@
 
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>link</TrimMode>
+
+    <AssemblyName>TENKOH2_BEACON_DECODER</AssemblyName>
     
   </PropertyGroup>
 
