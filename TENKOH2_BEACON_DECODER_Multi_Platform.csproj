@@ -13,7 +13,7 @@
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>link</TrimMode>
 
-    <AssemblyName>TENKOH2_BEACON_DECODER</AssemblyName>
+    <AssemblyName>TENKOH2_BEACON_DECODER DEMO</AssemblyName>
     
   </PropertyGroup>
 
