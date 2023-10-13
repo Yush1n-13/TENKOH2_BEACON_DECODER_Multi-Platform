@@ -14,6 +14,7 @@
     <TrimMode>link</TrimMode>
 
     <AssemblyName>TENKOH2_BEACON_DECODER DEMO</AssemblyName>
+    <ApplicationIcon>Images\TK2_icon.ico</ApplicationIcon>
     
   </PropertyGroup>
 

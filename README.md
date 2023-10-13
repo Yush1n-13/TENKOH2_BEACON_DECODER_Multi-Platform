@@ -33,9 +33,9 @@ Note: If there are no updates for 3 minutes, or if the specified folder doesn't 
 
 ## Sample CW Beacon Strings
 
-> 28fa37549eb67025ff19f19d0  
+> 28fa37549eb67025ff19f19d0
 > 28fa37549eb6702fff19f19d0
-> 28fa37549eb67025ff01C5B37792270004000   
+> 28fa37549eb67025ff01C5B37792270004000
 
 ## Compatibility
 
