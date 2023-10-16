@@ -19,7 +19,10 @@ This is an application developed at the Okuyama Laboratory for decoding the CW b
 
 ## Automatic Input Mode
 
-This feature allows automatic retrieval of the input string from the log file of an application called Fldigi. To utilize this mode, users need to select three options:
+This feature allows automatic retrieval of the input string from the log file of an application called Fldigi. This project assumes the use of the fldigi software. For details on fldigi, its official site, and download page, please refer to its official website.
+(Note: The link may change over time, so please verify information from an appropriate source as needed.)
+
+To utilize this mode, users need to select three options:
 
 1. **Target String**: This represents the string to be targeted during the automatic read. A colon (` : `) will be appended automatically to its end. Due to occasional misinterpretation of the initial part of the callsign, this feature is made adjustable for users. If you notice discrepancies in the CWDECODE application, adjust the target string accordingly. By default, it's set to the satellite's callsign, "JS1YKI".
 
