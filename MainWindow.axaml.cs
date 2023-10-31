@@ -312,17 +312,20 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             /// #11 Mode Timer
             (int, object) ProcessModeTimer(string hexValue)
             {
-                const float VOLTAGE_CONVERSION_FACTOR = 60f;
-                float dec6 = Convert.ToInt32(hexValue, 16) / VOLTAGE_CONVERSION_FACTOR;
+                float dec6 = Convert.ToInt32(hexValue, 16);
                 int dec6Time = (int)Math.Round(dec6);
                 object dec6OpMode;
-                if (dec6Time <= 1440)
+                if (dec6Time < 1440)
                 {
-                    dec6OpMode = "TRP";
+                    dec6OpMode = "TRP mode";
+                }
+                else if (dec6Time >= 1440 && dec6Time <= 2880)
+                {
+                    dec6OpMode = "58G mode";
                 }
                 else
                 {
-                    dec6OpMode = "58G";
+                    dec6OpMode = "INVALID_TIME";
                 }
                 return (dec6Time, dec6OpMode);
             }
@@ -357,6 +360,25 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                     {"bitResultUHFCWON", bitResultListJam[7]}
                 };
 
+                string status = "";
+                switch (hexValue.ToUpper())
+                {
+                    case "33":
+                        status = "TRP";
+                        break;
+                    case "37":
+                        status = "TCW";
+                        break;
+                    case "09":
+                        status = "58G";
+                        break;
+                    default:
+                        status = "INVALD";
+                        break;
+                }
+
+                statusResults["Status"] = status;
+
                 return statusResults;
             }
 
@@ -364,8 +386,16 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             float ProcessADCVoltage(string hexValue)
             {
                 const float VOLTAGE_OFFSET = 515f;
-                float dec8ADCVolt = (2 * Convert.ToInt32(hexValue, 16) - VOLTAGE_OFFSET) / 1000f;
-                return (float)Math.Round((double)dec8ADCVolt , 2);
+                float decValue = Convert.ToInt32(hexValue, 16);
+                if (decValue == 0)
+                {
+                    return decValue;
+                }
+                else
+                {
+                    float dec8ADCVolt = (2 * decValue - VOLTAGE_OFFSET) / 1000f;
+                    return (float)Math.Round((double)dec8ADCVolt , 2);
+                }
             }
 
             /// #12 RF Input VHF-Band
@@ -382,14 +412,15 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             {
                 const float VOLTAGE_CONVERSION_FACTOR5 = 0.0154f;
                 const float RFOUTPUT_OFFSET1 = 16.841f;
+                float decValue = Convert.ToInt32(hexValue, 16);
 
-                if (hexValue == "000")
+                if (decValue < 1f)
                 {
                     return "---";
                 }
                 else
                 {
-                    float decRF = VOLTAGE_CONVERSION_FACTOR5 * Convert.ToInt32(hexValue, 16) + RFOUTPUT_OFFSET1;
+                    float decRF = VOLTAGE_CONVERSION_FACTOR5 * decValue + RFOUTPUT_OFFSET1;
                     return (float)Math.Round((double)decRF , 2);
                 }
             }
@@ -399,14 +430,15 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             {
                 const float VOLTAGE_CONVERSION_FACTOR6 = 0.009f;
                 const float RFOUTPUT_OFFSET2 = 4.499f + 5.5f;
+                float decValue = Convert.ToInt32(hexValue, 16);
 
-                if (hexValue == "000")
+                if (decValue < 19f)
                 {
                     return "---";
                 }
                 else
                 {
-                    float decRF = VOLTAGE_CONVERSION_FACTOR6 * Convert.ToInt32(hexValue, 16) + RFOUTPUT_OFFSET2;
+                    float decRF = VOLTAGE_CONVERSION_FACTOR6 * decValue + RFOUTPUT_OFFSET2;
                     return (float)Math.Round((double)decRF , 2);
                 }
             }
@@ -687,6 +719,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
                 /// #10 JAMSAT Status
                 var jamStatusResults = ProcessJAMSATStatus(hex9);
+                string jamStatus = jamStatusResults["Status"];
                 string bitResultVC1LOCK = jamStatusResults["bitResultVC1LOCK"];
                 string bitResultVC2LOCK = jamStatusResults["bitResultVC2LOCK"];
                 string bitResult7021LOCK = jamStatusResults["bitResult7021LOCK"];
@@ -786,6 +819,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 txtRFOutputUHF.Text = roundeddec12RF.ToString();
                 txtRFOutput58G.Text = roundeddec13RF.ToString();
 
+                txtJAMStatus.Text = jamStatus.ToString();
                 txtVC1LOCK.Text = bitResultVC1LOCK.ToString();
                 txtVC2LOCK.Text = bitResultVC2LOCK.ToString();
                 txt7021LOCK.Text = bitResult7021LOCK.ToString();
@@ -848,6 +882,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                     },
                     JamsatStatusBits = new JamsatStatusBitsData
                     {
+                        _Status = jamStatus,
                         _VC1_LOCK = bitResultVC1LOCK,
                         _VC2_LOCK = bitResultVC2LOCK,
                         _7021_LOCK = bitResult7021LOCK,
@@ -914,11 +949,11 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 txtI2CRTCJ, txtI2CMEMJ, txtI2CEPSCJ, txtI2CCOMJ, txtI2CANTJ, txtI2CIFPVJ, txtI2CADCSJ, txtI2CCAMJ, txtI2CMATLIUJ, txtI2CNUJ, txtUARTJAMSATJ,               
                 txt5VCAMJ, txt5VPLJ, txt5VNUMJ, txt3V3JAMSATJ, txt3V3ADCSJ, txt5VOBCJ, txt5VADCSJ, txt5VCOMJ, txt12VADCSJ, txt12VLIUJ, 
                 txtModeTimer, txtModeTimerOP, txtADCVoltage, txtRFInput, txtRFOutputUHF, txtRFOutput58G,
-                txtVC1LOCK, txtVC2LOCK, txt7021LOCK, txt58GLOCK, txtVC2ON, txtAMPEN, txt58GON, txtUHFCWON
+                txtJAMStatus, txtVC1LOCK, txtVC2LOCK, txt7021LOCK, txt58GLOCK, txtVC2ON, txtAMPEN, txt58GON, txtUHFCWON
             );
 
             UpdateStatusIndicators(
-                (txt5VCAM, statusIndicator5VCAM), 
+                (txt5VCAM, statusIndicator5VCAM),
                 (txt5VPL, statusIndicator5VPL),
                 (txt5VNUM, statusIndicator5VNUM),
                 (txt3V3JAMSAT, statusIndicator3V3JAMSAT),
@@ -1404,6 +1439,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
     public class JamsatStatusBitsData
     {
         public JamsatStatusBitsData() { }
+        public string _Status { get; set; }
         public string _VC1_LOCK { get; set; }
         public string _VC2_LOCK { get; set; }
         public string _7021_LOCK { get; set; }

@@ -206,10 +206,10 @@
                             </controls:Card>
 
                             <controls:Card
-                                x:Name="Card2" 
-                                Width="440" 
-                                Height="180" 
-                                HorizontalAlignment="Left" 
+                                x:Name="Card2"
+                                Width="440"
+                                Height="180"
+                                HorizontalAlignment="Left"
                                 Margin="10,10,10,0">
 
                                 <StackPanel>
@@ -222,7 +222,7 @@
                                         <TextBlock Width="30"/>
                                     </StackPanel>
 
-                                    <Grid>    
+                                    <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
@@ -320,10 +320,10 @@
                             </controls:Card>
 
                             <controls:Card
-                                x:Name="Card7" 
-                                Width="440" 
-                                Height="205" 
-                                HorizontalAlignment="Left" 
+                                x:Name="Card7"
+                                Width="440"
+                                Height="205"
+                                HorizontalAlignment="Left"
                                 Margin="10">
 
                                 <StackPanel>
@@ -336,7 +336,7 @@
                                         <TextBlock Width="30"/>
                                     </StackPanel>
 
-                                    <Grid>    
+                                    <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
@@ -353,7 +353,7 @@
                                                     <TextBlock x:Name="txtI2CRTC" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
                                             </StackPanel>
-                                            
+
                                             <!-- I2C_MEM -->
                                             <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
                                                 <TextBlock Text="I2C_MEM:" Width="110"/>
@@ -412,7 +412,7 @@
                                                     <TextBlock x:Name="txtI2CADCS" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
                                             </StackPanel>
-                                            
+
                                             <!-- I2C_CAM -->
                                             <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
                                                 <TextBlock Text="I2C_CAM:" Width="110"/>
@@ -421,7 +421,7 @@
                                                     <TextBlock x:Name="txtI2CCAM" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
                                             </StackPanel>
-                                            
+
                                             <!-- I2C_MATLIU -->
                                             <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
                                                 <TextBlock Text="I2C_MATLIU:" Width="110"/>
@@ -430,7 +430,7 @@
                                                     <TextBlock x:Name="txtI2CMATLIU" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
                                             </StackPanel>
-                                            
+
                                             <!-- I2C_NU -->
                                             <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
                                                 <TextBlock Text="I2C_NU:" Width="110"/>
@@ -460,9 +460,9 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                             <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
                                 <controls:Card
-                                    x:Name="Card3" 
-                                    Width="440" 
-                                    Height="150" 
+                                    x:Name="Card3"
+                                    Width="440"
+                                    Height="150"
                                     HorizontalAlignment="Left"
                                     Margin="10,10,10,0">
 
@@ -544,10 +544,10 @@
                                 </controls:Card>
 
                                 <controls:Card
-                                    x:Name="Card4" 
-                                    Width="440" 
-                                    Height="180" 
-                                    HorizontalAlignment="Left" 
+                                    x:Name="Card4"
+                                    Width="440"
+                                    Height="180"
+                                    HorizontalAlignment="Left"
                                     Margin="10,10,10,0">
 
                                     <StackPanel>
@@ -560,7 +560,7 @@
                                             <TextBlock Width="30"/>
                                         </StackPanel>
 
-                                        <Grid>    
+                                        <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
@@ -658,10 +658,10 @@
                                 </controls:Card>
 
                                 <controls:Card
-                                x:Name="Card8" 
-                                Width="440" 
-                                Height="205" 
-                                HorizontalAlignment="Left" 
+                                x:Name="Card8"
+                                Width="440"
+                                Height="205"
+                                HorizontalAlignment="Left"
                                 Margin="10">
 
                                 <StackPanel>
@@ -674,7 +674,7 @@
                                         <TextBlock Width="30"/>
                                     </StackPanel>
 
-                                    <Grid>    
+                                    <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
@@ -691,7 +691,7 @@
                                                     <TextBlock x:Name="txtI2CRTCJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
                                             </StackPanel>
-                                            
+
                                             <!-- I2C_MEM -->
                                             <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
                                                 <TextBlock Text="I2C_MEM:" Width="110"/>
@@ -750,7 +750,7 @@
                                                     <TextBlock x:Name="txtI2CADCSJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
                                             </StackPanel>
-                                            
+
                                             <!-- I2C_CAM -->
                                             <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
                                                 <TextBlock Text="I2C_CAM:" Width="110"/>
@@ -759,7 +759,7 @@
                                                     <TextBlock x:Name="txtI2CCAMJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
                                             </StackPanel>
-                                            
+
                                             <!-- I2C_MATLIU -->
                                             <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
                                                 <TextBlock Text="I2C_MATLIU:" Width="110"/>
@@ -768,7 +768,7 @@
                                                     <TextBlock x:Name="txtI2CMATLIUJ" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Border>
                                             </StackPanel>
-                                            
+
                                             <!-- I2C_NU -->
                                             <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
                                                 <TextBlock Text="I2C_NU:" Width="110"/>
@@ -797,14 +797,14 @@
                             <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
                                 <controls:Card
                                     x:Name="Card5"
-                                    Width="220" 
-                                    Height="180" 
-                                    HorizontalAlignment="Left" 
+                                    Width="220"
+                                    Height="180"
+                                    HorizontalAlignment="Left"
                                     Margin="10,10,10,0">
 
                                     <StackPanel>
                                         <TextBlock Text="JAMSAT Teremetry" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
-                                        <Grid>    
+                                        <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
@@ -822,9 +822,7 @@
                                                 <!-- Opration Mode -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
                                                     <TextBlock Text="Opration Mode: " Width="110"/>
-                                                    <Border Background="#F5F5F5" BorderBrush="Black" BorderThickness="1" Width="50" VerticalAlignment="Center">
-                                                        <TextBlock x:Name="txtModeTimerOP" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                    </Border>
+                                                    <TextBlock x:Name="txtModeTimerOP" FontStyle="Italic" Width="100"/>
                                                 </StackPanel>
                                                 <!-- SDC Voltage -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
@@ -834,7 +832,6 @@
                                                     </Border>
                                                     <TextBlock Text=" V" Width="60"/>
                                                 </StackPanel>
-
                                                 <!-- RF Input UHF-Band -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                                                     <TextBlock Text="RFInput(VHF): " Width="110"/>
@@ -866,21 +863,27 @@
 
                                 <controls:Card
                                     x:Name="Card6"
-                                    Width="220" 
-                                    Height="230" 
-                                    HorizontalAlignment="Left" 
+                                    Width="220"
+                                    Height="260"
+                                    HorizontalAlignment="Left"
                                     Margin="10">
 
                                     <StackPanel>
                                         <TextBlock Text="JAMSAT Status" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
 
-                                        <Grid>    
+                                        <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
 
                                             <!-- First Column -->
                                             <StackPanel Orientation="Vertical" Grid.Column="0">
+                                                <!-- JAMSAT Status -->
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                                    <TextBlock Text="N3TRP Status: " Width="130"/>
+                                                    <TextBlock x:Name="txtJAMStatus" FontStyle="Italic" Width="70"/>
+                                                    <TextBlock Width="30"/>
+                                                </StackPanel>
                                                 <!-- txtVC1LOCK -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
                                                     <TextBlock Text="VC1LOCK:" Width="100"/>
@@ -913,7 +916,6 @@
                                                         <TextBlock x:Name="txt58GLOCK" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                     </Border>
                                                 </StackPanel>
-
                                                 <!-- VC2_ON -->
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,5,5">
                                                     <TextBlock Text="VC2ON:" Width="100"/>
@@ -951,7 +953,7 @@
                                     </StackPanel>
                                 </controls:Card>
 
-                                
+
                             </StackPanel>
                         </StackPanel>
                     </TabItem>
@@ -960,9 +962,9 @@
 
             <StackPanel Orientation="Vertical" Margin="0,48,0,0">
                 <controls:Card
-                    Width="350" 
-                    Height="345" 
-                    HorizontalAlignment="Left" 
+                    Width="350"
+                    Height="345"
+                    HorizontalAlignment="Left"
                     Margin="10,10,10,0">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -972,17 +974,17 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0" Text="Input Log" FontWeight="Bold" FontSize="16"/>
-                        
-                        <TextBox 
+
+                        <TextBox
                             Grid.Row="1"
-                            Name="OutputTextBox" 
+                            Name="OutputTextBox"
                             Width="330"
-                            Margin="0,0,0,0" 
+                            Margin="0,0,0,0"
                             HorizontalAlignment="Left"
                             AcceptsReturn="True"
                             IsReadOnly="True"/>
 
-                        <Button 
+                        <Button
                             Grid.Row="2"
                             Content="Clear Log"
                             Width="100"
@@ -992,21 +994,21 @@
                     </Grid>
                 </controls:Card>
                 <controls:Card
-                    Width="350" 
-                    Height="200" 
-                    HorizontalAlignment="Left" 
-                    Margin="10"> 
+                    Width="350"
+                    Height="200"
+                    HorizontalAlignment="Left"
+                    Margin="10">
                     <StackPanel>
                         <TextBlock Text="Infomation" FontWeight="Bold" FontSize="16"/>
                         <Image Source="Images\TEN-KOH2.png" Margin="5" Width="320"/>
                         <TextBlock Text="There is the CW upload form"/>
-                        <Border 
-                            Background="Transparent" 
-                            Cursor="Hand" 
+                        <Border
+                            Background="Transparent"
+                            Cursor="Hand"
                             PointerPressed="OnLinkClicked">
-                            <TextBlock 
-                                Text="https://forms.gle/mt5ZkfrqArZmmfVv8" 
-                                Foreground="Blue" 
+                            <TextBlock
+                                Text="https://forms.gle/mt5ZkfrqArZmmfVv8"
+                                Foreground="Blue"
                                 TextDecorations="Underline" />
                         </Border>
                         <TextBlock Text="Thank you for your cooperation!"/>
@@ -1014,6 +1016,6 @@
                     </StackPanel>
                 </controls:Card>
             </StackPanel>
-        </StackPanel> 
-    </StackPanel> 
+        </StackPanel>
+    </StackPanel>
 </Window>
