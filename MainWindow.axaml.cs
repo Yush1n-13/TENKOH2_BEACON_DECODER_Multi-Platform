@@ -1220,9 +1220,12 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 {
                     SettingsButton_Click(null,null);
                 }
+                else
+                {
+                    LoadSettings();
+                    StartPolling();
+                }
 
-                LoadSettings();
-                StartPolling();
             }
         }
 
