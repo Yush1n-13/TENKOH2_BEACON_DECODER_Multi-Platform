@@ -216,7 +216,7 @@
 
                                     <!-- GPIO Expander ID -->
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                        <TextBlock Text="GPIO Expander ID: " Width="130"/>
+                                        <TextBlock Text="GPIO Expander ID: " Width="120"/>
                                         <Ellipse x:Name="statusIndicatorGPIOID" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
                                         <TextBlock x:Name="txtGPIOExpander" FontStyle="Italic" Width="70"/>
                                         <TextBlock Width="30"/>
@@ -331,7 +331,7 @@
 
                                     <!-- System Check -->
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                        <TextBlock Text="System Check: " Width="110"/>
+                                        <TextBlock Text="System Check: " Width="100"/>
                                         <Ellipse x:Name="statusIndicatorSUBSYS" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
                                         <TextBlock x:Name="txtSystemCheck" FontStyle="Italic" Width="220"/>
                                         <TextBlock Width="30"/>
@@ -556,7 +556,7 @@
 
                                         <!-- GPIO Expander ID -->
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                            <TextBlock Text="GPIO Expander ID: " Width="130"/>
+                                            <TextBlock Text="GPIO Expander ID: " Width="120"/>
                                             <Ellipse x:Name="statusIndicatorGPIOIDJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
                                             <TextBlock x:Name="txtGPIOExpanderJ" FontStyle="Italic" Width="70"/>
                                             <TextBlock Width="30"/>
@@ -671,7 +671,7 @@
 
                                     <!-- System Check -->
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                        <TextBlock Text="System Check: " Width="110"/>
+                                        <TextBlock Text="System Check: " Width="100"/>
                                         <Ellipse x:Name="statusIndicatorSUBSYSJ" Width="10" Height="10" Fill="Gray" VerticalAlignment="Center" Margin="5,0,5,0"/>
                                         <TextBlock x:Name="txtSystemCheckJ" FontStyle="Italic" Width="220"/>
                                         <TextBlock Width="30"/>

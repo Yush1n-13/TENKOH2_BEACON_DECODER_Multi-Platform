@@ -47,7 +47,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error loading settings: {ex}");
+                Console.WriteLine($"[ERROR] Error loading settings: {ex}");
             }
         }
 
@@ -59,14 +59,14 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             using Stream stream = assembly.GetManifestResourceStream(resourceName);
             if (stream == null)
             {
-                Console.WriteLine($"Resource {resourceName} not found.");
+                Console.WriteLine($"[ERROR] Resource {resourceName} not found.");
                 return;
             }
             using StreamReader reader = new StreamReader(stream);
             var json = reader.ReadToEnd();
 
             var config = JsonConvert.DeserializeObject<AppConfig>(json);
-            Console.WriteLine(json);
+            Console.WriteLine($"[INFO] AppConfig\n{json}");
 
             _targetString = config.targetString;
             _ReferencedFilePath = config.ReferencedFilePath;
@@ -80,7 +80,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
             if (InputTextBox?.Text == null)
             {
-                Console.WriteLine("InputTextBox is null!");
+                Console.WriteLine("[ERROR] InputTextBox is null!");
                 return;
             }
 
@@ -88,7 +88,14 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
             if (!Regex.IsMatch(input, "^[a-fA-F0-9]+$"))
             {
-                Console.WriteLine("Invalid hexadecimal value.");
+                var _currentTime = DateTime.Now;
+                string _timestamp = _currentTime.ToString("yyyy/MM/dd HH:mm:ss");
+
+                Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    OutputTextBox.Text = $"{_timestamp}: \n[ERROR] Invalid hexadecimal value.\n" + OutputTextBox.Text;
+                });
+                Console.WriteLine("[ERROR] Invalid hexadecimal value.");
                 return;
             }
 
@@ -243,7 +250,6 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 int decValue = Convert.ToInt32(hexValue, 16);
                 string binary = Convert.ToString(decValue, 2).PadLeft(12, '0');
                 binary = binary.PadRight(16, '0');
-                Console.WriteLine(binary);
                 List<int> binaryList = new List<int>();
                 foreach (char bit in binary)
                 {
@@ -1125,12 +1131,12 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                     dummyAccess = logData.JamsatStatusBits?._UHFCW_ON;
 
                 }
-                
+
                 // 1. Generate the path to the log directory based on the application's execution directory
                 string appDirectory = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
                 string logsDirectory = System.IO.Path.Combine(appDirectory, "Logs");
 
-                Console.WriteLine($"App Directory: {appDirectory}");
+                Console.WriteLine($"[INFO] App Directory: {appDirectory}");
 
 
                 // 2. If the directory doesn't exist, create it
@@ -1148,12 +1154,12 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
                 // 5. Save the JSON data to a file
                 File.WriteAllText(logFilePath, jsonData);
-                Console.WriteLine(jsonData);
+                Console.WriteLine($"[INFO] Decode Data\n{jsonData}");
             }
             catch (Exception ex)
             {
                 // Log the exception or show a message to the user
-                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"[ERROR] Error: {ex.Message}");
             }
         }
 
@@ -1197,7 +1203,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
             if (radioButton == ManualInputRadio)
             {
-                Console.WriteLine("ManualInputRadio selected");
+                Console.WriteLine("[INFO] ManualInputRadio selected");
                 InputTextBox.IsEnabled = true;
                 InputTextBox.Text = "";
                 ResetUI();
@@ -1205,7 +1211,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             }
             else if (radioButton == AutomaticInputRadio)
             {
-                Console.WriteLine("AutomaticInputRadio selected");
+                Console.WriteLine("[INFO] AutomaticInputRadio selected");
                 InputTextBox.IsEnabled = false;
                 InputTextBox.Text = "";
                 ResetUI();
@@ -1243,27 +1249,28 @@ This feature periodically reads data from a specified file and processes it as n
 
         private void StartPolling()
         {
-            Console.WriteLine("StartPolling");
+            Console.WriteLine("[INFO] StartPolling");
             _timer = new Timer(500); // 2 seconds
             _timer.Elapsed += PollFile;
             _timer.AutoReset = true;
             _timer.Start();
 
             _sessionTimeoutTimer?.Dispose();
-            _sessionTimeoutTimer = new Timer(60000); // 10min = 600000ms
-            _sessionTimeoutTimer.Elapsed += (sender, e) => Timer_Elapsed(sender, e);
+            _sessionTimeoutTimer = new Timer(600000); // 10min = 600000ms
+            _sessionTimeoutTimer.Elapsed += (sender, e) => Timer_Elapsed(null, null);
             _sessionTimeoutTimer.AutoReset = false;
             _sessionTimeoutTimer.Start();
         }
 
         private void PollFile(object sender, ElapsedEventArgs e)
         {
-            Console.WriteLine($"PollFile called at {DateTime.Now}");
+            Console.WriteLine($"[DEBUG] PollFile called at {DateTime.Now}");
             // Console.WriteLine(_targetString + _extractedDataLength + "\n" + _ReferencedFilePath);
 
             if (string.IsNullOrWhiteSpace(_ReferencedFilePath))
             {
-                Timer_Elapsed(null,null);
+                Console.WriteLine($"[ERROR] NULL detected{_ReferencedFilePath}");
+                OnErrorSwitchToManual(null,null);
                 return;
             }
 
@@ -1271,18 +1278,15 @@ This feature periodically reads data from a specified file and processes it as n
 
             if (!System.IO.File.Exists(TargetFilePath))
             {
-                Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    OutputTextBox.Text = $"File does not exist:\n{TargetFilePath}\n" + OutputTextBox.Text;
-                });
-                Timer_Elapsed(null,null);
+                Console.WriteLine($"[ERROR] File does not exist:{TargetFilePath}");
+                OnErrorSwitchToManual(null,null);
                 return;
             }
 
             if (!System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(TargetFilePath)))
             {
-                Console.WriteLine($"Directory does not exist: {System.IO.Path.GetDirectoryName(TargetFilePath)}");
-                Timer_Elapsed(null,null);
+                Console.WriteLine($"[ERROR] Directory does not exist: {System.IO.Path.GetDirectoryName(TargetFilePath)}");
+                OnErrorSwitchToManual(null,null);
                 return;
             }
 
@@ -1299,7 +1303,7 @@ This feature periodically reads data from a specified file and processes it as n
                 {
                     InputTextBox.Text = postTargetContent;
                 });
-                Console.WriteLine(postTargetContent);
+                Console.WriteLine($"[DEBUG] {postTargetContent}");
 
                 if (content.Length >= lastIndex + targetStringlength + separatorlength + _extractedDataLength)
                 {
@@ -1360,25 +1364,45 @@ This feature periodically reads data from a specified file and processes it as n
                 }
                 catch (DirectoryNotFoundException)
                 {
-                    Console.WriteLine($"Directory not found: {path}");
+                    Console.WriteLine($"[INFO] Directory not found: {path}");
                 }
                 catch (FileNotFoundException)
                 {
-                    Console.WriteLine($"File not found: {path}");
+                    Console.WriteLine($"[INFO] File not found: {path}");
                 }
                 catch (IOException ex)
                 {
                     if (i == maxRetries - 1)
                         throw;
                     System.Threading.Thread.Sleep(delayOnRetry);
-                    Console.WriteLine($"IOException encountered: {ex.Message}");
+                    Console.WriteLine($"[ERROR] IOException encountered: {ex.Message}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Exception encountered: {ex.Message}");
+                    Console.WriteLine($"[ERROR] Exception encountered: {ex.Message}");
                 }
             }
             return null;
+        }
+
+        private void OnErrorSwitchToManual(object sender, ElapsedEventArgs e)
+        {
+            Dispatcher.UIThread.InvokeAsync(() => {
+                ManualInputRadio.IsChecked = true;
+                //RadioButton_Checked(ManualInputRadio, null);
+            });
+
+            _timer.Stop();
+            _timer.Dispose();
+            Console.WriteLine("[INFO] StopPolling\nReverting to Manual Input Mode.");
+
+            var currentTime = DateTime.Now;
+            string timestamp = currentTime.ToString("yyyy/MM/dd HH:mm:ss");
+
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                OutputTextBox.Text = $"{timestamp}: \n[ERROR] Unreachable reference detected,\nplease check.\n" + OutputTextBox.Text;
+            });
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -1390,11 +1414,14 @@ This feature periodically reads data from a specified file and processes it as n
 
             _timer.Stop();
             _timer.Dispose();
-            Console.WriteLine("StopPolling");
-            Console.WriteLine("Session Timed Out: Reverting to Manual Input Mode.");
+            Console.WriteLine("[INFO] StopPolling\nNo updates detected for 10 minutes. Reverting to Manual Input Mode.");
+
+            var currentTime = DateTime.Now;
+            string timestamp = currentTime.ToString("yyyy/MM/dd HH:mm:ss");
+
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                OutputTextBox.Text = "Session Timed Out \n" + OutputTextBox.Text;
+                OutputTextBox.Text = $"{timestamp}: \n[INFO] No updates detected for 10 minutes.\n" + OutputTextBox.Text;
             });
         }
 
