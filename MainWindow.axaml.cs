@@ -122,7 +122,8 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             Dictionary<string, string> ProcessStatus(string hexValue, bool isGpioExpanderIdFalse)
             {
                 int decValue = Convert.ToInt32(hexValue, 16);
-                string binary = Convert.ToString(decValue, 2).PadRight(16, '0');
+                string binary = Convert.ToString(decValue, 2).PadLeft(12, '0');
+                binary = binary.PadRight(16, '0');
                 List<int> binaryList = new List<int>();
                 foreach (char bit in binary)
                 {
@@ -214,18 +215,19 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             /// #6 EPS Controller Status
             string ProcessEPSControllerStatus(string hexValue)
             {
+                int value = Convert.ToInt32(hexValue, 16);
                 string mode;
 
-                switch (hexValue)
+                switch (value)
                 {
-                    case "2":
-                        mode = "NormalMode";
+                    case 2:
+                        mode = "Nominal Mode";
                         break;
-                    case "3":
-                        mode = "MissionMode";
+                    case 3:
+                        mode = "Mission Mode";
                         break;
-                    case "4":
-                        mode = "EmergencyMode";
+                    case 4:
+                        mode = "Emergency Mode";
                         break;
                     default:
                         mode = "Invalid";
@@ -239,7 +241,9 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             Dictionary<string, string> ProcessSubsystemInterfaceStatus(string hexValue)
             {
                 int decValue = Convert.ToInt32(hexValue, 16);
-                string binary = Convert.ToString(decValue, 2).PadRight(16, '0');
+                string binary = Convert.ToString(decValue, 2).PadLeft(12, '0');
+                binary = binary.PadRight(16, '0');
+                Console.WriteLine(binary);
                 List<int> binaryList = new List<int>();
                 foreach (char bit in binary)
                 {
@@ -304,9 +308,46 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             }
 
             /// #10 Opretion Mode
-            string ProcessOperationMode()
+            string ProcessOperationMode(string hexValue)
             {
-                return "TK";
+                int value = Convert.ToInt32(hexValue, 16);
+                string mode;
+
+                switch (value)
+                {
+                    case 0:
+                        mode = "Nominal Mode";
+                        break;
+                    case 1:
+                        mode = "Real Time Mode";
+                        break;
+                    case 2:
+                        mode = "ADCS Mode";
+                        break;
+                    case 3:
+                        mode = "Mission Mode";
+                        break;
+                    case 4:
+                        mode = "JAMSAT Mission Mode";
+                        break;
+                    case 5:
+                        mode = "Telemetry Download Mode";
+                        break;
+                    case 6:
+                        mode = "Payload Download Mode";
+                        break;
+                    case 7:
+                        mode = "Direct Subsystem CMD Mode";
+                        break;
+                    case 8:
+                        mode = "Emegency Mode";
+                        break;
+                    default:
+                        mode = "Invalid";
+                        break;
+                }
+
+                return mode;
             }
 
             /// #11 Mode Timer
@@ -526,7 +567,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 float roundeddec9Temp = ProcessTemperature(hex9);
 
                 /// #8 Opretion Mode
-                hex10 = ProcessOperationMode();
+                string dec10 = ProcessOperationMode(hex10);
 
                 /// Rabel
                 txtGPIOExpander.Text = dec1.ToString();
@@ -537,7 +578,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 txtWDUTemperature.Text = roundeddec8Temp.ToString();
                 txtMCUTemperature.Text = roundeddec9Temp.ToString();
                 txtEPSControllerStatus.Text = dec6.ToString();
-                txtOperationMode.Text = hex10.ToString();
+                txtOperationMode.Text = dec10.ToString();
 
                 txt5VCAM.Text = bitResult5VCAM.ToString();
                 txt5VPL.Text = bitResult5VPL.ToString();
@@ -549,6 +590,8 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 txt5VCOM.Text = bitResult5VCOM.ToString();
                 txt12VADCS.Text = bitResult12VADCS.ToString();
                 txt12VLIU.Text = bitResult12VLIU.ToString();
+
+                UpdateStatusIndicator(txtGPIOExpander, statusIndicatorGPIOID);
 
                 UpdateStatusIndicator(txt5VCAM, statusIndicator5VCAM);
                 UpdateStatusIndicator(txt5VPL, statusIndicator5VPL);
@@ -574,6 +617,8 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 txtI2CMATLIU.Text = bitResultI2CMATLIU.ToString();
                 txtI2CNU.Text = bitResultI2CNU.ToString();
                 txtUARTJAMSAT.Text = bitResultUARTJAMSAT.ToString();
+
+                UpdateStatusIndicator(txtSystemCheck, statusIndicatorSUBSYS);
 
                 UpdateStatusIndicator(txtI2CRTC, statusIndicatorI2CRTC);
                 UpdateStatusIndicator(txtI2CMEM, statusIndicatorI2CMEM);
@@ -601,7 +646,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                     WDUTemperature = roundeddec8Temp,
                     MCUTemperature = roundeddec9Temp,
                     EPSControllerStatus = dec6,
-                    OperationMode = hex10,
+                    OperationMode = dec10,
                     StatusBits = new StatusBitsData
                     {
                         _5V_CAM = bitResult5VCAM,
@@ -751,7 +796,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 object roundeddec13RF = ProcessRFOutput58G(hex13);
 
                 /// #15(8) Opretion Mode
-                hex14 = ProcessOperationMode();
+                string dec14 = ProcessOperationMode(hex14);
 
                 /// Rabel
                 txtGPIOExpanderJ.Text = dec1.ToString();
@@ -762,7 +807,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 txtEPSControllerStatusJ.Text = dec6.ToString();
                 txtWDUTemperatureJ.Text = "---";
                 txtMCUTemperatureJ.Text = "---";
-                txtOperationModeJ.Text = hex14.ToString();
+                txtOperationModeJ.Text = dec14.ToString();
 
                 txt5VCAMJ.Text = bitResult5VCAM.ToString();
                 txt5VPLJ.Text = bitResult5VPL.ToString();
@@ -774,6 +819,8 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 txt5VCOMJ.Text = bitResult5VCOM.ToString();
                 txt12VADCSJ.Text = bitResult12VADCS.ToString();
                 txt12VLIUJ.Text = bitResult12VLIU.ToString();
+
+                UpdateStatusIndicator(txtGPIOExpanderJ, statusIndicatorGPIOIDJ);
 
                 UpdateStatusIndicator(txt5VCAMJ, statusIndicator5VCAMJ);
                 UpdateStatusIndicator(txt5VPLJ, statusIndicator5VPLJ);
@@ -799,6 +846,8 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 txtI2CMATLIUJ.Text = bitResultI2CMATLIU.ToString();
                 txtI2CNUJ.Text = bitResultI2CNU.ToString();
                 txtUARTJAMSATJ.Text = bitResultUARTJAMSAT.ToString();
+
+                UpdateStatusIndicator(txtSystemCheckJ, statusIndicatorSUBSYSJ);
 
                 UpdateStatusIndicator(txtI2CRTCJ, statusIndicatorI2CRTCJ);
                 UpdateStatusIndicator(txtI2CMEMJ, statusIndicatorI2CMEMJ);
@@ -850,8 +899,8 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                     BatteryTemperature = roundeddec5Temp,
                     WDUTemperature = "---", // Data not provided.
                     MCUTemperature = "---", // Data not provided.
-                    OperationMode = hex12,
                     EPSControllerStatus = dec6,
+                    OperationMode = dec14,
                     StatusBits = new StatusBitsData
                     {
                         _5V_CAM = bitResult5VCAM,
@@ -953,6 +1002,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             );
 
             UpdateStatusIndicators(
+                (txtGPIOExpander, statusIndicatorGPIOID),
                 (txt5VCAM, statusIndicator5VCAM),
                 (txt5VPL, statusIndicator5VPL),
                 (txt5VNUM, statusIndicator5VNUM),
@@ -963,6 +1013,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 (txt5VCOM, statusIndicator5VCOM),
                 (txt12VADCS, statusIndicator12VADCS),
                 (txt12VLIU, statusIndicator12VLIU),
+                (txtGPIOExpanderJ, statusIndicatorGPIOIDJ),
                 (txt5VCAMJ, statusIndicator5VCAMJ),
                 (txt5VPLJ, statusIndicator5VPLJ),
                 (txt5VNUMJ, statusIndicator5VNUMJ),
@@ -981,6 +1032,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 (txtAMPEN, statusIndicatorAMPEN),
                 (txt58GON, statusIndicator58GON),
                 (txtUHFCWON, statusIndicatorUHFCWON),
+                (txtGPIOExpander, statusIndicatorGPIOID),
                 (txtI2CRTC, statusIndicatorI2CRTC),
                 (txtI2CMEM, statusIndicatorI2CMEM),
                 (txtI2CEPSC, statusIndicatorI2CEPSC),
@@ -992,6 +1044,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 (txtI2CMATLIU, statusIndicatorI2CMATLIU),
                 (txtI2CNU, statusIndicatorI2CNU),
                 (txtUARTJAMSAT, statusIndicatorUARTJAMSAT),
+                (txtGPIOExpanderJ, statusIndicatorGPIOIDJ),
                 (txtI2CRTCJ, statusIndicatorI2CRTCJ),
                 (txtI2CMEMJ, statusIndicatorI2CMEMJ),
                 (txtI2CEPSCJ, statusIndicatorI2CEPSCJ),
@@ -1014,7 +1067,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
         public void SaveLogData(object data)
         {
             try
-            {    
+            {
                 if (data is LogData logData)
                 {
                     var dummyAccess = logData.Callsign;
@@ -1106,11 +1159,19 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
 
         private void UpdateStatusIndicator(TextBlock txtBlock, Ellipse indicator)
         {
-            if (txtBlock.Text == "ON" || txtBlock.Text == "ACTIVE" || txtBlock.Text == "STABLE")
+            if (txtBlock.Text == "ON"
+                    || txtBlock.Text == "ACTIVE"
+                    || txtBlock.Text == "STABLE"
+                    || txtBlock.Text == "True"
+                    || txtBlock.Text == "All Systems Operational")
             {
                 indicator.Fill = new SolidColorBrush(Colors.Green);
             }
-            else if (txtBlock.Text == "OFF" || txtBlock.Text == "INACTIVE" || txtBlock.Text == "FAULT")
+            else if (txtBlock.Text == "OFF"
+                        || txtBlock.Text == "INACTIVE"
+                        || txtBlock.Text == "FAULT"
+                        || txtBlock.Text == "Falue"
+                        || txtBlock.Text == "Subsystem Interface Error Detected")
             {
                 indicator.Fill = new SolidColorBrush(Colors.Red);
             }
@@ -1153,19 +1214,19 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                 {
                     SettingsButton_Click(null,null);
                 }
-                _lastProcessedTime = DateTime.Now;
 
                 LoadSettings();
                 StartPolling();
             }
         }
 
-        // private void RadioButton_Unchecked(object sender, RoutedEventArgs e)
-        // {
-        //     Console.WriteLine($"{(sender as RadioButton).Name} is unchecked.");
-        // }
+/*
+Implements the functionality for the automatic reading mode.
+This feature periodically reads data from a specified file and processes it as needed.
+*/
 
-        // AutomaticInputRadio selected Section
+        const string SEPARATOR = " : ";
+
         enum DataState
         {
             Initial,
@@ -1178,7 +1239,7 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
         private string _targetString;
         private string _ReferencedFilePath;
         private Timer _timer;
-        private DateTime _lastProcessedTime;
+        private Timer _sessionTimeoutTimer;
 
         private void StartPolling()
         {
@@ -1187,6 +1248,12 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             _timer.Elapsed += PollFile;
             _timer.AutoReset = true;
             _timer.Start();
+
+            _sessionTimeoutTimer?.Dispose();
+            _sessionTimeoutTimer = new Timer(60000); // 10min = 600000ms
+            _sessionTimeoutTimer.Elapsed += (sender, e) => Timer_Elapsed(sender, e);
+            _sessionTimeoutTimer.AutoReset = false;
+            _sessionTimeoutTimer.Start();
         }
 
         private void PollFile(object sender, ElapsedEventArgs e)
@@ -1220,14 +1287,13 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
             }
 
             var content = ReadFileContentWithRetry(TargetFilePath);
-            string separator = " : ";
-            int lastIndex = content.LastIndexOf(_targetString + separator);
-            int separatorlength = separator.Length;
+            int lastIndex = content.LastIndexOf(_targetString + SEPARATOR);
+            int separatorlength = SEPARATOR.Length;
             int targetStringlength = _targetString.Length;
 
             if (lastIndex != -1)
             {
-                string postTargetContent = content.Substring(lastIndex + _targetString.Length + separator.Length);
+                string postTargetContent = content.Substring(lastIndex + _targetString.Length + SEPARATOR.Length);
 
                 Dispatcher.UIThread.InvokeAsync(() =>
                 {
@@ -1242,7 +1308,6 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                     switch (_currentState)
                     {
                         case DataState.Initial:
-                            _lastProcessedTime = DateTime.Now;
                             Dispatcher.UIThread.InvokeAsync(() =>
                             {
                                 InputTextBox.Text = "";
@@ -1267,19 +1332,15 @@ namespace TENKOH2_BEACON_DECODER_Multi_Platform
                             break;
                     }
 
-                    // After 2 minutes without updates in Automatic mode, reverts back to Manual mode.
-                    TimeSpan _sessionTimeout = TimeSpan.FromMinutes(2);
-
-                    // Check the elapsed time
-                    if (DateTime.Now - _lastProcessedTime > _sessionTimeout)
-                    {
-                        Timer_Elapsed(null, null);
-                    }
                 }
                 else
                 {
                     _currentState = DataState.Initial;
                 }
+
+                // Session Timer reset
+                _sessionTimeoutTimer.Stop();
+                _sessionTimeoutTimer.Start();
             }
 
         }
